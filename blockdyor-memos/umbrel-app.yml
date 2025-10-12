@@ -1,0 +1,46 @@
+manifestVersion: 1
+id: blockdyor-memos
+name: Memos
+tagline: A privacy-first, lightweight note-taking service
+icon: https://raw.githubusercontent.com/usememos/memos/main/web/public/android-chrome-512x512.png
+category: productivity
+version: "0.24.2"
+port: 5230
+description: >-
+  Memos is a modern, open-source, self-hosted knowledge management and note-taking 
+  platform designed for privacy-conscious users. It offers a lightweight yet powerful 
+  solution for capturing, organizing, and sharing thoughts with comprehensive Markdown 
+  support and cross-platform accessibility.
+  
+  
+  Features:
+  
+  - Complete data ownership - all data stored locally
+  
+  - Instant save with streamlined plain text input
+  
+  - Rich Markdown support with syntax highlighting
+  
+  - Media integration for images, links, and embedded content
+  
+  - Lightweight and fast performance
+  
+  - RESTful API for integrations
+  
+  - Multi-database support (SQLite, PostgreSQL, MySQL)
+
+developer: Memos
+website: https://www.usememos.com
+repo: https://github.com/usememos/memos
+support: https://github.com/usememos/memos/issues
+gallery:
+  - https://raw.githubusercontent.com/usememos/memos/main/web/public/screenshot.webp
+
+releaseNotes: >-
+  Initial release of Memos for Umbrel.
+
+dependencies: []
+path: ""
+
+submitter: blockdyor
+submission: https://github.com/blockdyor/blockdyor-umbrel-community-app-store
