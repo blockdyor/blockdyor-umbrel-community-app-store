@@ -4,9 +4,18 @@ services:
   app:
     image: neosmemo/memos:stable
     restart: unless-stopped
-    ports:
-      - "${APP_PORT}:5230"
     volumes:
       - ${APP_DATA_DIR}/data:/var/opt/memos
     environment:
       - TZ=${TZ}
+    networks:
+      default:
+        ipv4_address: ${APP_MEMOS_IP}
+
+  app_proxy:
+    environment:
+      APP_HOST: ${APP_MEMOS_IP}
+      APP_PORT: 5230
+    networks:
+      default:
+        ipv4_address: ${APP_MEMOS_PROXY_IP}
