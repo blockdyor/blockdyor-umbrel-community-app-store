@@ -1,6 +1,11 @@
 version: "3.7"
 
 services:
+  app_proxy:
+    environment:
+      APP_HOST: blockdyor-memos_app_1
+      APP_PORT: 5230
+
   app:
     image: neosmemo/memos:stable
     restart: unless-stopped
@@ -8,14 +13,3 @@ services:
       - ${APP_DATA_DIR}/data:/var/opt/memos
     environment:
       - TZ=${TZ}
-    networks:
-      default:
-        ipv4_address: ${APP_BLOCKDYOR_MEMOS_IP}
-
-  app_proxy:
-    environment:
-      APP_HOST: ${APP_BLOCKDYOR_MEMOS_IP}
-      APP_PORT: 5230
-    networks:
-      default:
-        ipv4_address: ${APP_BLOCKDYOR_MEMOS_PROXY_IP}
