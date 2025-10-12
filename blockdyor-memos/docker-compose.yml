@@ -1,15 +1,15 @@
 version: "3.7"
 
 services:
+  app_proxy:
+    environment:
+      APP_HOST: blockdyor-memos_app_1
+      APP_PORT: 5230
+
   app:
     image: neosmemo/memos:stable
     restart: unless-stopped
     volumes:
       - ${APP_DATA_DIR}/data:/var/opt/memos
     environment:
-      - TZ=${TZ}
-
-  app_proxy:
-    environment:
-      APP_HOST: blockdyor-memos_app_1
-      APP_PORT: 5230
+      TZ: ${TZ}
