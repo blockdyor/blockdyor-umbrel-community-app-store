@@ -2,7 +2,7 @@ manifestVersion: 1
 id: blockdyor-dumbpad
 name: DumbPad
 tagline: A stupidly simple notepad with collaboration
-icon: https://raw.githubusercontent.com/DumbWareio/DumbPad/main/public/favicon.svg
+icon: https://raw.githubusercontent.com/DumbWareio/DumbPad/main/public/Assets/dumbpad.png
 category: productivity
 version: "1.0.0"
 port: 3000
@@ -25,4 +25,4 @@ dependencies: []
 path: ""
 
 submitter: blockdyor
-submission: https://github.com/blockdyor/umbrel-community-app-store
+submission: https://github.com/blockdyor/blockdyor-umbrel-community-app-store
