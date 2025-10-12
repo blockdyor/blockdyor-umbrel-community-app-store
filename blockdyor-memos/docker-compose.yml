@@ -10,12 +10,12 @@ services:
       - TZ=${TZ}
     networks:
       default:
-        ipv4_address: ${APP_MEMOS_IP}
+        ipv4_address: ${APP_BLOCKDYOR_MEMOS_IP}
 
   app_proxy:
     environment:
-      APP_HOST: ${APP_MEMOS_IP}
+      APP_HOST: ${APP_BLOCKDYOR_MEMOS_IP}
       APP_PORT: 5230
     networks:
       default:
-        ipv4_address: ${APP_MEMOS_PROXY_IP}
+        ipv4_address: ${APP_BLOCKDYOR_MEMOS_PROXY_IP}
