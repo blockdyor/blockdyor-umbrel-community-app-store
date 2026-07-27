@@ -1,6 +1,6 @@
 manifestVersion: 1
 version: "2"
-id: bassin2
+id: bassin
 name: bassin 2
 tagline: Solo Bitcoin Mining Pool (ckPool)
 description: >-
