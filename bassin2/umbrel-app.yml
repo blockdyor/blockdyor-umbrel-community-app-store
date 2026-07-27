@@ -1,7 +1,7 @@
 manifestVersion: 1
 version: "2"
-id: bassin2
-name: bassin 2
+id: blockdyor-bassin
+name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
 description: >-
   A zero-fee Bitcoin solo mining pool for Umbrel. Run your own ckPool at home.
