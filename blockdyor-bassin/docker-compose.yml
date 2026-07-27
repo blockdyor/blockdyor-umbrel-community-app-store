@@ -3,7 +3,7 @@ version: '3.7'
 services:
   app_proxy:
     environment:
-      APP_HOST: blockdyor-bassin_www_1
+      APP_HOST: bassin_www_1
       APP_PORT: 80
       PROXY_AUTH_ADD: "false"
 
@@ -58,12 +58,12 @@ services:
     depends_on:
       - ui
     restart: on-failure
-    container_name: blockdyor-bassin_www_1
+    container_name: bassin_www_1
 
   widget-server:
     image: ghcr.io/blockdyor/umbrel-bassin-widget:main@sha256:0f2b9d16a709aecc09b6b1901e037587738a9706f633cdf824b298129f6b994b
     environment:
-      - BASSIN_API_POOL_URL=http://blockdyor-bassin_www_1/pool/pool.status
+      - BASSIN_API_POOL_URL=http://bassin_www_1/pool/pool.status
     depends_on:
       - www
     restart: on-failure
