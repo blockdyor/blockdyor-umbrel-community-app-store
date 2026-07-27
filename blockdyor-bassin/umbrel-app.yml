@@ -34,11 +34,11 @@ developer: blockdyor
 website: https://github.com/blockdyor
 repo: https://github.com/blockdyor/bassin
 support: https://github.com/blockdyor/bassin/issues
-icon: https://raw.githubusercontent.com/blockdyor/bassin/main/blockdyor-bassin/icon.svg
+icon: https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bassin/icon.svg
 gallery:
-  - https://raw.githubusercontent.com/blockdyor/bassin/main/blockdyor-bassin/gallery_1.jpg
-  - https://raw.githubusercontent.com/blockdyor/bassin/main/blockdyor-bassin/gallery_2.jpg
-  - https://raw.githubusercontent.com/blockdyor/bassin/main/blockdyor-bassin/gallery_3.jpg
+  - https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bassin/gallery_1.jpg
+  - https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bassin/gallery_2.jpg
+  - https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bassin/gallery_3.jpg
 path: ""
 defaultUsername: ""
 defaultPassword: ""
