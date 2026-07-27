@@ -1,35 +1,44 @@
-manifestVersion: 1.1
-version: "2.1.1"
+manifestVersion: 1
+version: "2.0.2"
 id: blockdyor-bassin
-name: blockdyor-Bassin
+name: Bassin+
 tagline: Solo Bitcoin Mining Pool (ckPool)
 description: >-
   A zero-fee Bitcoin solo mining pool for Umbrel. Run your own ckPool at home.
+
+
   No setup, no hassle.
-    - Make sure your Bitcoin node is fully synchronized and running
+    - Make sure your Bitcoin Node is fully synchronized and running
     - Install the app, then follow the on-screen instructions
     - Be part of decentralized mining
-  
+
+
   Check out the FAQ page: https://github.com/duckaxe/bassin/wiki/FAQ
+
+
   For academic and research purposes only.
 category: bitcoin
 dependencies:
   - bitcoin
 releaseNotes: >-
-  Updated ckpool to v1.1.1, now built directly from Con Kolivas' main
-  ckpool repository (previously ckpool-solo, which has been merged
-  upstream into the main project).
-port: 5008
-submitter: duckaxe
-developer: duckaxe
-website: https://github.com/duckaxe
-repo: https://github.com/duckaxe/bassin
-support: https://github.com/duckaxe/bassin/issues
-submission: https://github.com/getumbrel/umbrel-apps/pull/3375
+  Updated ckpool to v1.1.1, built from a verified source
+  (ghcr.io/getumbrel/docker-ckpool-solo).
+
+
+  Replaced an unsafe HTML-injection pattern in the UI's number
+  formatting with safe React rendering. No visual or functional
+  change, purely a hardening fix.
+port: 5009
+submitter: blockdyor
+developer: blockdyor
+website: https://github.com/blockdyor
+repo: https://github.com/blockdyor/bassin
+support: https://github.com/blockdyor/bassin/issues
+icon: https://raw.githubusercontent.com/blockdyor/bassin/main/blockdyor-bassin/icon.svg
 gallery:
-  - 1.jpg
-  - 2.jpg
-  - 3.jpg
+  - https://raw.githubusercontent.com/blockdyor/bassin/main/blockdyor-bassin/gallery_1.jpg
+  - https://raw.githubusercontent.com/blockdyor/bassin/main/blockdyor-bassin/gallery_2.jpg
+  - https://raw.githubusercontent.com/blockdyor/bassin/main/blockdyor-bassin/gallery_3.jpg
 path: ""
 defaultUsername: ""
 defaultPassword: ""
