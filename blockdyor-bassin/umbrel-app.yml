@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "1.0.1"
+version: "1.0.2"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
@@ -22,8 +22,7 @@ dependencies:
   - bitcoin
 releaseNotes: >-
   Updated ckpool to v1.1.1, built from a verified source
-  (ghcr.io/getumbrel/docker-ckpool-solo).
-
+  (ghcr.io/blockdyor/docker-ckpool-solo).
 
   Replaced an unsafe HTML-injection pattern in the UI's number
   formatting with safe React rendering. No visual or functional
