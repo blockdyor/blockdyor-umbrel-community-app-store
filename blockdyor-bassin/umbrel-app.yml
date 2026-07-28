@@ -1,22 +1,18 @@
 manifestVersion: 1
-version: "1.0.2"
+version: "1.0.3"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
 description: >-
-  A zero-fee Bitcoin solo mining pool for Umbrel. Run your own ckPool at home.
+  A zero-fee Bitcoin solo mining pool for Umbrel, featuring the latest
+  ckPool (v1.1.1). Run your own ckPool at home.
 
 
-  No setup, no hassle.
-    - Make sure your Bitcoin Node is fully synchronized and running
-    - Install the app, then follow the on-screen instructions
-    - Be part of decentralized mining
+  Make sure your Bitcoin Node is fully synced, then install and follow
+  the on-screen instructions.
 
 
   Check out the FAQ page: https://github.com/duckaxe/bassin/wiki/FAQ
-
-
-  For academic and research purposes only.
 category: bitcoin
 dependencies:
   - bitcoin
@@ -24,9 +20,14 @@ releaseNotes: >-
   Updated ckpool to v1.1.1, built from a verified source
   (ghcr.io/blockdyor/docker-ckpool-solo).
 
+
   Replaced an unsafe HTML-injection pattern in the UI's number
   formatting with safe React rendering. No visual or functional
   change, purely a hardening fix.
+
+  Added a copy-to-clipboard button next to the stratum host on the
+  onboarding screen, so you can grab it without selecting the text
+  by hand.
 port: 5009
 submitter: blockdyor
 developer: blockdyor
