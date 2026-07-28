@@ -40,7 +40,7 @@ services:
       - ${APP_DATA_DIR}/data/www:/www
 
   ui:
-    image: ghcr.io/blockdyor/bassin-ui:49969aa@sha256:363f80063a173777cde3bdc8754e18d25b80e266071a551d8e524c439a518bde
+    image: ghcr.io/blockdyor/bassin-ui:6ce88d2@sha256:84252a7a56175c173839674ec58533ad121063e88d00540d5886e491d938c4b3
     entrypoint: /bin/sh -c "cp -r /ui/* /www/"
     user: "1000:1000"
     volumes:
