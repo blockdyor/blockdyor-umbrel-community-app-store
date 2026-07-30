@@ -4,29 +4,28 @@ id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
 description: >-
-  A zero-fee Bitcoin solo mining pool for Umbrel, featuring the latest
-  ckPool (v1.1.1). Run your own ckPool at home.
+  A zero-fee Bitcoin solo mining pool for Umbrel. Run your own ckPool at home.
 
 
-  Make sure your Bitcoin Node is fully synced, then install and follow
-  the on-screen instructions.
+  No setup, no hassle.
+    - Make sure your Bitcoin Node is fully synchronized and running
+    - Install the app, then follow the on-screen instructions
+    - Be part of decentralized mining
 
 
   Check out the FAQ page: https://github.com/blockdyor/bassin/wiki/FAQ
+
+
+  For academic and research purposes only.
 category: bitcoin
 dependencies:
   - bitcoin
 releaseNotes: >-
-  Updated ckpool to v1.1.1, built from a verified source
-  (ghcr.io/blockdyor/docker-ckpool-solo).
-
-
-  Replaced an unsafe HTML-injection pattern in the UI's number
+  Key highlights:
+    - Replaced an unsafe HTML-injection pattern in the UI's number
   formatting with safe React rendering. No visual or functional
   change, purely a hardening fix.
-  
-
-  Added a copy-to-clipboard button next to the stratum host on the
+    - Added a copy-to-clipboard button next to the stratum host on the
   onboarding screen, so you can grab it without selecting the text
   by hand.
 port: 5009
@@ -35,11 +34,12 @@ developer: blockdyor
 website: https://github.com/blockdyor
 repo: https://github.com/blockdyor/bassin
 support: https://github.com/blockdyor/bassin/issues
-icon: https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bassin/icon.svg
+submission: https://github.com/getumbrel/umbrel-apps/pull/5938
+icon: https://raw.githubusercontent.com/blockdyor/bassin/main/duckaxe-bassin/icon.svg
 gallery:
-  - https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bassin/gallery_1.jpg
-  - https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bassin/gallery_2.jpg
-  - https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bassin/gallery_3.jpg
+  - https://raw.githubusercontent.com/blockdyor/bassin/main/duckaxe-bassin/gallery_1.jpg
+  - https://raw.githubusercontent.com/blockdyor/bassin/main/duckaxe-bassin/gallery_2.jpg
+  - https://raw.githubusercontent.com/blockdyor/bassin/main/duckaxe-bassin/gallery_3.jpg
 path: ""
 defaultUsername: ""
 defaultPassword: ""
