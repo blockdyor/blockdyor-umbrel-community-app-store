@@ -23,10 +23,10 @@ services:
       - APP_BITCOIN_RPC_USER=${APP_BITCOIN_RPC_USER}
       - APP_BITCOIN_RPC_PASS=${APP_BITCOIN_RPC_PASS}
       - APP_BITCOIN_ZMQ_HASHBLOCK_PORT=${APP_BITCOIN_ZMQ_HASHBLOCK_PORT}
-    restart: on-failure
 
   ckpool:
-    image: ghcr.io/blockdyor/docker-ckpool-solo:v1.1.1@sha256:faf0c1a21017915949e946141bad38aee9bfdcfffe0fc3952b2f8fb283965b1e
+    image: ghcr.io/getumbrel/docker-ckpool-solo:v1.1.1@sha256:499f0d4f72b93130bde06463b6aab25fa80f1f2349bab0e28f1c9a59b02f745b
+    command: '-k -B -c /config/ckpool.conf'
     entrypoint: /bin/sh -c './bin/ckpool -k -B -c /config/ckpool.conf'
     user: "1000:1000"
     depends_on:
@@ -59,7 +59,6 @@ services:
     depends_on:
       - ui
     restart: on-failure
-    # container_name removed: Umbrel injects container names automatically
 
   widget-server:
     image: ghcr.io/blockdyor/umbrel-bassin-widget:main@sha256:0f2b9d16a709aecc09b6b1901e037587738a9706f633cdf824b298129f6b994b
