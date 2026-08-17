@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "2.1.3b"
+version: "2.1.3"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
