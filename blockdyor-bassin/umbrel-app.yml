@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "2.1.2"
+version: "2.1.3"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
@@ -22,12 +22,9 @@ dependencies:
   - bitcoin
 releaseNotes: >-
   Key highlights:
-    - Replaced an unsafe HTML-injection pattern in the UI's number
-  formatting with safe React rendering. No visual or functional
-  change, purely a hardening fix.
-    - Added a copy-to-clipboard button next to the stratum host on the
-  onboarding screen, so you can grab it without selecting the text
-  by hand.
+    - Show precise UTC timestamps in tooltips for pool/user
+  last-update and last-share times; change hover cursors
+  to help where tooltips are available.
 port: 5009
 submitter: blockdyor
 developer: blockdyor
@@ -35,10 +32,11 @@ website: https://github.com/blockdyor
 repo: https://github.com/blockdyor/bassin
 support: https://github.com/blockdyor/bassin/issues
 submission: https://github.com/getumbrel/umbrel-apps/pull/5938
+icon: https://raw.githubusercontent.com/blockdyor/bassin/main/duckaxe-bassin/icon.svg
 gallery:
-  - 1.jpg
-  - 2.jpg
-  - 3.jpg
+  - https://raw.githubusercontent.com/blockdyor/bassin/main/duckaxe-bassin/gallery_1.jpg
+  - https://raw.githubusercontent.com/blockdyor/bassin/main/duckaxe-bassin/gallery_2.jpg
+  - https://raw.githubusercontent.com/blockdyor/bassin/main/duckaxe-bassin/gallery_3.jpg
 path: ""
 defaultUsername: ""
 defaultPassword: ""
