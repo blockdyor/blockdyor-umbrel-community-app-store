@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "2.1.4"
+version: "2.1.5"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
@@ -22,10 +22,7 @@ dependencies:
   - bitcoin
 releaseNotes: >-
    Key highlights:
-      - Update footer GitHub link to blockdyor/bassin with safe new-tab navigation.
-      - Sanitize user list parsing against path traversal and autoindex parent links.
-      - Add safe localStorage parsing to prevent UI crashes from invalid data.
-      - Update build dependencies to resolve all audit vulnerabilities.
+      - Update ckpool solo mining engine to v1.2.0.
 port: 5009
 submitter: blockdyor
 developer: blockdyor
