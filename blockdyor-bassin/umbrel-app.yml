@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "2.1.5"
+version: "2.1.6"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
@@ -21,8 +21,16 @@ category: bitcoin
 dependencies:
   - bitcoin
 releaseNotes: >-
-   Key highlights:
-      - Update ckpool solo mining engine to v1.2.0.
+  A redesigned mining dashboard based on Umbrel Bitcoin UI, with Bassin's blue water palette.
+
+
+  View hashrate averages, share quality, searchable workers, and Best Share Ever.
+  Settings now includes pool logs, configuration import/export, and a link to Bassin on GitHub.
+  Applying an exported configuration still requires replacing the config file and restarting the pool.
+
+
+  Drag the globe to explore. A pulsing blue marker shows the approximate location of the public IP
+  reported by your Bitcoin node, when available. The UI never detects the visitor's IP address.
 port: 5009
 submitter: blockdyor
 developer: blockdyor
