@@ -38,10 +38,14 @@ services:
       - ${APP_DATA_DIR}/data/config:/config:ro
       - ${APP_DATA_DIR}/data/www:/www
   ui:
-    image: ghcr.io/blockdyor/bassin-ui:0e779e6@sha256:d8febed17f9b63f85227f3168ff2d7b15f9c430402866ad06237cebb4dc9dc68
-    entrypoint: /bin/sh -c "cp -r /ui/* /www/"
+    image: ghcr.io/blockdyor/bassin-ui:b18bf1d@sha256:0eb35765947f2d32eb29b7a6606569e0e4268388e908931b6050a121225e3787
+    entrypoint: /bin/sh -c "cp -r /ui/* /www/ && exec python3 /opt/bassin/pool-location.py"
     user: "1000:1000"
+    depends_on:
+      init:
+        condition: service_completed_successfully
     volumes:
+      - ${APP_DATA_DIR}/data/config:/config:ro
       - ${APP_DATA_DIR}/data/www:/www
     restart: on-failure
   www:
