@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "2.1.8"
+version: "2.1.9"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
@@ -21,10 +21,11 @@ category: bitcoin
 dependencies:
   - bitcoin
 releaseNotes: >-
-  Dates and times in the dashboard now use UTC consistently, with a live UTC clock in Insights.
-  Fix dark text in the hashrate chart tooltip and improve chart label contrast.
-  Show the detected CKPool version beside the Bassin version, updating automatically when
-  the pool software changes. Existing CKPool log timestamps remain unchanged.
+  Improve mobile stability by releasing globe graphics resources when leaving Home,
+  reducing graphics load on touch devices, and showing a static globe if graphics are interrupted.
+  Fix clipped share-quality labels on small phones. Restore the larger, lighter version text
+  with natural spacing between Bassin and CKPool. Worker Setup now explains that the successful
+  miner receives the full block reward, including transaction fees, with no pool commission.
 port: 5009
 submitter: blockdyor
 developer: blockdyor
