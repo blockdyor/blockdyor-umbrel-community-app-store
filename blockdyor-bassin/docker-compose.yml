@@ -38,7 +38,7 @@ services:
       - ${APP_DATA_DIR}/data/config:/config:ro
       - ${APP_DATA_DIR}/data/www:/www
   ui:
-    image: ghcr.io/blockdyor/bassin-ui:b18bf1d@sha256:0eb35765947f2d32eb29b7a6606569e0e4268388e908931b6050a121225e3787
+    image: ghcr.io/blockdyor/bassin-ui:5ade047@sha256:8638d1a2b65584db27b3aba47a1ec58b034b612edd2111fc1e1fc34f1d640253
     entrypoint: /bin/sh -c "cp -r /ui/* /www/ && exec python3 /opt/bassin/pool-location.py"
     user: "1000:1000"
     depends_on:
