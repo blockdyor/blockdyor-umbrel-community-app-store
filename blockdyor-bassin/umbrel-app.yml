@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "2.1.7"
+version: "2.1.8"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
@@ -21,10 +21,10 @@ category: bitcoin
 dependencies:
   - bitcoin
 releaseNotes: >-
-  Restore the white background and blue water in the top-left Bassin icon.
-  Fix unreadable labels in Bitcoin Node settings, including RPC Host and Port.
-  Clarify Round Best Share versus Best Share Ever: the round record survives restarts
-  and resets when the pool finds a block or its share counters are explicitly reset.
+  Dates and times in the dashboard now use UTC consistently, with a live UTC clock in Insights.
+  Fix dark text in the hashrate chart tooltip and improve chart label contrast.
+  Show the detected CKPool version beside the Bassin version, updating automatically when
+  the pool software changes. Existing CKPool log timestamps remain unchanged.
 port: 5009
 submitter: blockdyor
 developer: blockdyor

@@ -25,7 +25,7 @@ services:
       - APP_BITCOIN_ZMQ_HASHBLOCK_PORT=${APP_BITCOIN_ZMQ_HASHBLOCK_PORT}
   ckpool:
     image: ghcr.io/blockdyor/docker-ckpool-solo:v1.2.0-1@sha256:ac630bfd6675cb512317f3a75edff7940dcf0378dc8aeb61ba9ac592aa6bdb87
-    entrypoint: /bin/sh -c './bin/ckpool -k -B -c /config/ckpool.conf'
+    entrypoint: ["/bin/sh", "/opt/bassin/ckpool-start.sh", "-k", "-B", "-c", "/config/ckpool.conf"]
     user: "1000:1000"
     depends_on:
       init:
@@ -37,8 +37,9 @@ services:
     volumes:
       - ${APP_DATA_DIR}/data/config:/config:ro
       - ${APP_DATA_DIR}/data/www:/www
+      - ${APP_DATA_DIR}/hooks/ckpool-start.sh:/opt/bassin/ckpool-start.sh:ro
   ui:
-    image: ghcr.io/blockdyor/bassin-ui:5ade047@sha256:8638d1a2b65584db27b3aba47a1ec58b034b612edd2111fc1e1fc34f1d640253
+    image: ghcr.io/blockdyor/bassin-ui:d615f52@sha256:c9986c9f2783ce22dca8433f6f1f25c011657d92f026446c122e94a705ebaac1
     entrypoint: /bin/sh -c "cp -r /ui/* /www/ && exec python3 /opt/bassin/pool-location.py"
     user: "1000:1000"
     depends_on:
