@@ -39,7 +39,7 @@ services:
       - ${APP_DATA_DIR}/data/www:/www
       - ${APP_DATA_DIR}/hooks/ckpool-start.sh:/opt/bassin/ckpool-start.sh:ro
   ui:
-    image: ghcr.io/blockdyor/bassin-ui:d615f52@sha256:c9986c9f2783ce22dca8433f6f1f25c011657d92f026446c122e94a705ebaac1
+    image: ghcr.io/blockdyor/bassin-ui:99b6772@sha256:5e68a6032ff1e4907059aec8117e8533b7648fb68126a3d0911538ef78ef458a
     entrypoint: /bin/sh -c "cp -r /ui/* /www/ && exec python3 /opt/bassin/pool-location.py"
     user: "1000:1000"
     depends_on:
