@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "2.1.10"
+version: "2.1.11"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
@@ -21,12 +21,12 @@ category: bitcoin
 dependencies:
   - bitcoin
 releaseNotes: >-
-  Clarify Bitcoin Core notification settings with an independent Poll for new blocks control
-  and a grouped block polling interval. Improve ZMQ hashblock endpoint guidance and validation,
-  including port ranges and IPv6 addresses. Explain that clearing the endpoint restores the
-  localhost default and that disabled polling does not automatically resume if notifications stop.
-  Use plain RPC labels and make node notification settings searchable. Configuration remains
-  import, edit, and export, preserving credentials, additional nodes, and custom options.
+  Replace the home screen's block-shaped hashrate tiles with animated water columns
+  for the 1-minute, 5-minute, 1-hour, 24-hour, and 7-day averages. Water levels use
+  a shared scale, with exact values and a highlighted 5-minute average. Enjoy gentle
+  waves and cursor interaction, with all five averages visible on narrow screens.
+  Lighter rendering removes an extra 3D canvas. Animation respects reduced motion
+  and pauses off-screen, in hidden tabs, or when pool data is stale or unavailable.
 port: 5009
 submitter: blockdyor
 developer: blockdyor
