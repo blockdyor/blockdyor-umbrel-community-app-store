@@ -4,16 +4,13 @@ id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
 description: >-
-  A zero-fee Bitcoin solo mining pool for Umbrel. Run your own ckPool at home.
+  Run a Bitcoin solo mining pool on your Umbrel with no pool fee. Shares track your miners' work; they do not earn regular payouts.
 
 
-  No setup, no hassle.
-    - Make sure your Bitcoin Node is fully synchronized and running
-    - Install the app, then follow the on-screen instructions
-    - Be part of decentralized mining
+  Keep Umbrel's Bitcoin Node app running and fully synchronized. After installing Bassin, open Connect → Worker Setup for the Stratum address (port 3456). Use your own Bitcoin receiving address followed by a dot and a worker name as the miner username. Use x as the password.
 
 
-  Check out the FAQ page: https://github.com/blockdyor/bassin/wiki/FAQ
+  Already running Bassin from the official store? Back up its data and stop it before switching. The two apps use separate data directories but need the same Stratum port. See https://github.com/blockdyor/bassin/blob/main/docs/getting-started.md
 
 
   For academic and research purposes only.
@@ -22,8 +19,8 @@ dependencies:
   - bitcoin
 releaseNotes: >-
   The pool location helper now restricts unencrypted Bitcoin RPC connections to private
-  or loopback addresses. Use HTTPS for a public RPC endpoint. Existing mining data
-  and configuration are preserved.
+  or loopback addresses. Use HTTPS for a public RPC endpoint. On an in-place
+  update, the community package reuses the existing ckpool.conf.
 port: 5009
 submitter: blockdyor
 developer: blockdyor
