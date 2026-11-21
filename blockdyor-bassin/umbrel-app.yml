@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "2.1.12"
+version: "2.1.12-patch.1"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
@@ -18,9 +18,9 @@ category: bitcoin
 dependencies:
   - bitcoin
 releaseNotes: >-
-  The pool location helper now restricts unencrypted Bitcoin RPC connections to private
-  or loopback addresses. Use HTTPS for a public RPC endpoint. On an in-place
-  update, the community package reuses the existing ckpool.conf.
+  Interrupted first-time setup can now retry without leaving a partial CKPool configuration.
+  Existing configurations are not regenerated. The dashboard UI remains 2.1.12. The community
+  command-line dashboard now reads pool and worker statistics from the installed data directory.
 port: 5009
 submitter: blockdyor
 developer: blockdyor

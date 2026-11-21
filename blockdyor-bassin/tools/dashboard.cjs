@@ -9,8 +9,8 @@ async function readAndPrint() {
   console.log('~ ~ ~  BASSIN');
   console.log(' ~~~\n');
 
-  await readAndPrintPool(path.join(__dirname, '../www/pool', 'pool.status'));
-  await readAndPrintUsers(path.join(__dirname, '../www', 'users'));
+  await readAndPrintPool(path.join(__dirname, '../data/www/pool', 'pool.status'));
+  await readAndPrintUsers(path.join(__dirname, '../data/www', 'users'));
 }
 
 async function readAndPrintPool(file) {

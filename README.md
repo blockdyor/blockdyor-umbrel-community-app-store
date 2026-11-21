@@ -14,7 +14,7 @@ https://github.com/blockdyor/blockdyor-umbrel-community-app-store
 
 ## Update or switch stores
 
-For an update, use the store you installed Bassin from. The [community manifest](blockdyor-bassin/umbrel-app.yml) lists its version and release notes; [Docker Compose](blockdyor-bassin/docker-compose.yml) pins its container images. An existing `data/config/ckpool.conf` is reused rather than regenerated from the template.
+For an update, use the store you installed Bassin from. The [community manifest](blockdyor-bassin/umbrel-app.yml) lists its version and release notes; [Docker Compose](blockdyor-bassin/docker-compose.yml) pins its container images. An existing `data/config/ckpool.conf` is reused rather than regenerated from the template. If a previous first setup left a partial file, follow the [private backup and recovery instructions](https://github.com/blockdyor/bassin/blob/main/docs/getting-started.md#interrupted-first-setup); the update will not overwrite it.
 
 The [official Umbrel listing](https://apps.umbrel.com/app/bassin) installs a separate app (`bassin`, web port `5008`). Switching to the community app (`blockdyor-bassin`) does not migrate your data. Both pools need host port `3456`: stop the old pool before starting the new one.
 

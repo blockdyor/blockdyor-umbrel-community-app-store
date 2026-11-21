@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")/.."
+# Umbrel refreshes hooks, not tools. Migrate only the shipped, unmodified CLI.
+cli=tools/dashboard.cjs
+[ -f "$cli" ] && [ ! -L "$cli" ] || exit 0
+if printf '%s  %s\n' d924c55f3157764fb43db31a9b7bc176928dafc04f13b382358ff12010a0c557 "$cli" | sha256sum -c --status; then
+  sed -i "s|'\.\./www|'../data/www|g" "$cli"
+fi
