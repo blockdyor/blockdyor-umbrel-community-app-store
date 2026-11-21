@@ -33,9 +33,9 @@ support: https://github.com/blockdyor/bassin/issues
 submission: https://github.com/getumbrel/umbrel-apps/pull/5938
 icon: https://raw.githubusercontent.com/blockdyor/bassin/main/duckaxe-bassin/icon.svg
 gallery:
-  - https://raw.githubusercontent.com/blockdyor/bassin/main/duckaxe-bassin/gallery_1.jpg
-  - https://raw.githubusercontent.com/blockdyor/bassin/main/duckaxe-bassin/gallery_2.jpg
-  - https://raw.githubusercontent.com/blockdyor/bassin/main/duckaxe-bassin/gallery_3.jpg
+  - https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bassin/gallery_1.jpg
+  - https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bassin/gallery_2.jpg
+  - https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bassin/gallery_3.jpg
 path: ""
 defaultUsername: ""
 defaultPassword: ""
