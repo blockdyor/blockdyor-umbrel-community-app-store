@@ -176,5 +176,7 @@ const abbreviateNumber = (num) => {
   return num.toString();
 }
 
-readAndPrint();
-setInterval(readAndPrint, 60 * 1000);
+readAndPrint().catch(console.error);
+setInterval(() => {
+  readAndPrint().catch(console.error);
+}, 60 * 1000);
