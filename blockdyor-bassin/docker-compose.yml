@@ -37,6 +37,8 @@ services:
     image: ghcr.io/blockdyor/docker-ckpool-solo:v1.2.0-2@sha256:9a17c69583798c0ea4d79f754e7bb4298ee3dfe848a1bd5f2136ad2adf0d98b4
     entrypoint: ["/bin/sh", "/opt/bassin/ckpool-start.sh", "-k", "-B", "-c", "/config/ckpool.conf"]
     user: "1000:1000"
+    environment:
+      - MALLOC_ARENA_MAX=2
     depends_on:
       init:
         condition: service_completed_successfully
@@ -52,7 +54,7 @@ services:
       - ${APP_DATA_DIR}/data/www:/www
       - ${APP_DATA_DIR}/hooks/ckpool-start.sh:/opt/bassin/ckpool-start.sh:ro
   ui:
-    image: ghcr.io/blockdyor/bassin-ui:292838b@sha256:07e050a85c070418b75fda7bc04492b6f75f2e6f3983f80221acc055dfbc9c9e
+    image: ghcr.io/blockdyor/bassin-ui:e691554@sha256:ffea2cd14da0a0b191bd8576f52604c4fcec33ebd699c0979b144d6c81ca8395
     user: "1000:1000"
     depends_on:
       init:
@@ -60,11 +62,4 @@ services:
     volumes:
       - ${APP_DATA_DIR}/data/config:/config
       - ${APP_DATA_DIR}/data/www:/www
-    restart: on-failure
-  widget-server:
-    image: ghcr.io/blockdyor/umbrel-bassin-widget:main@sha256:0f2b9d16a709aecc09b6b1901e037587738a9706f633cdf824b298129f6b994b
-    environment:
-      - BASSIN_API_POOL_URL=http://blockdyor-bassin_ui_1:8080/pool/pool.status
-    depends_on:
-      - ui
     restart: on-failure

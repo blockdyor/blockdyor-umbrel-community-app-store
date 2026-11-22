@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "2.1.15"
+version: "2.1.16"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
@@ -18,23 +18,22 @@ category: bitcoin
 dependencies:
   - bitcoin
 releaseNotes: >-
-  Bassin 2.1.15 introduces live auto-saving Settings and automatic CKPool reloads!
-  Settings now loads your running ckpool.conf automatically — toggle Stratum V2 on
-  or adjust any mining/node option and valid changes save atomically (0600) and
-  reload CKPool within seconds, with no manual export or container restart needed.
+  Bassin 2.1.16 cuts RAM usage across the entire stack and adds new umbrelOS
+  dashboard widgets, including a Worker Best Diff Leaderboard!
 
 
-  Stored Bitcoin RPC passwords stay redacted on the server and are preserved
-  automatically on save, eliminating the false "Bitcoin node 1 needs host:port,
-  RPC username, and RPC password" error. Umbrel's built-in proxy authentication now
-  protects the web dashboard and live configuration API, while private Stratum V2
-  Noise keys remain isolated in data/sv2/ (never mounted in the UI container).
-
-
-  Includes CKPool v1.2.0-2 (upstream be3e1e07) with Noise-encrypted Stratum V2
-  (ports 3457/3458 alongside 3456) and full compatibility with both Bitcoin Core
-  and Bitcoin Knots (including 29.3 and earlier versions) over JSON-RPC + ZMQ.
-  Existing configurations and mining data are preserved.
+  - Lower RAM everywhere: removes the separate widget-server container (~50 MB
+    RAM saved; Bassin now runs just ckpool + ui), serves widgets directly from
+    local disk inside ui:8080 with 256 KiB thread stacks, 15s keep-alive timeouts,
+    and python3 -O -B, caps glibc malloc arenas on ckpool (MALLOC_ARENA_MAX=2),
+    and splits the frontend into lazy-loaded chunks (705 kB core shell; Settings
+    loads only 51 kB without parsing Three.js or Recharts).
+  - Three umbrelOS widgets: Pool Overview (now with scientific-notation hashrate
+    and stale-status fixes), Worker Best Diff Leaderboard (ranks workers by
+    all-time best share difficulty found ever), and Hashrate Averages (1m/5m/1h/24h).
+  - Includes 2.1.15 live auto-saving Settings, automatic CKPool reloads,
+    Noise-encrypted Stratum V2, Umbrel proxy auth, full compatibility with both
+    Bitcoin Core and Bitcoin Knots, and SonarCloud A security rating (0 issues).
 port: 5009
 submitter: blockdyor
 developer: blockdyor
@@ -54,7 +53,7 @@ widgets:
   - id: "stats"
     type: "four-stats"
     refresh: "30s"
-    endpoint: "widget-server:3000/widgets/pool"
+    endpoint: "ui:8080/widgets/pool"
     link: ""
     example:
       type: "four-stats"
@@ -71,3 +70,39 @@ widgets:
         - title: "Total Shares"
           text: "210"
           subtext: "M"
+  - id: "workers-leaderboard"
+    type: "list"
+    refresh: "30s"
+    endpoint: "ui:8080/widgets/workers"
+    link: ""
+    example:
+      type: "list"
+      link: ""
+      items:
+        - text: "#1 nerdqaxe"
+          subtext: "Best ever: 2.5T · 4.80 Th/s"
+        - text: "#2 bitaxe-gamma"
+          subtext: "Best ever: 147M · 1.20 Th/s"
+        - text: "#3 bitaxe-ultra"
+          subtext: "Best ever: 17.4M · 555 Gh/s"
+  - id: "hashrate"
+    type: "four-stats"
+    refresh: "30s"
+    endpoint: "ui:8080/widgets/hashrate"
+    link: ""
+    example:
+      type: "four-stats"
+      link: ""
+      items:
+        - title: "1m Avg"
+          text: "2.15"
+          subtext: "Th/s"
+        - title: "5m Avg"
+          text: "2.10"
+          subtext: "Th/s"
+        - title: "1h Avg"
+          text: "2.05"
+          subtext: "Th/s"
+        - title: "24h Avg"
+          text: "1.98"
+          subtext: "Th/s"
