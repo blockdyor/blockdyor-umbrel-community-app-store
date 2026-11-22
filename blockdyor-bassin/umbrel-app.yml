@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "2.1.16"
+version: "2.1.17"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
@@ -18,22 +18,24 @@ category: bitcoin
 dependencies:
   - bitcoin
 releaseNotes: >-
-  Bassin 2.1.16 cuts RAM usage across the entire stack and adds new umbrelOS
-  dashboard widgets, including a Worker Best Diff Leaderboard!
+  Bassin 2.1.17 adds native Bitcoin Core v32+ IPC mining support and hardens the
+  Config API for safe use with active miners and paid hashrate rentals!
 
 
-  - Lower RAM everywhere: removes the separate widget-server container (~50 MB
-    RAM saved; Bassin now runs just ckpool + ui), serves widgets directly from
-    local disk inside ui:8080 with 256 KiB thread stacks, 15s keep-alive timeouts,
-    and python3 -O -B, caps glibc malloc arenas on ckpool (MALLOC_ARENA_MAX=2),
-    and splits the frontend into lazy-loaded chunks (705 kB core shell; Settings
-    loads only 51 kB without parsing Three.js or Recharts).
-  - Three umbrelOS widgets: Pool Overview (now with scientific-notation hashrate
-    and stale-status fixes), Worker Best Diff Leaderboard (ranks workers by
-    all-time best share difficulty found ever), and Hashrate Averages (1m/5m/1h/24h).
-  - Includes 2.1.15 live auto-saving Settings, automatic CKPool reloads,
-    Noise-encrypted Stratum V2, Umbrel proxy auth, full compatibility with both
-    Bitcoin Core and Bitcoin Knots, and SonarCloud A security rating (0 issues).
+  - Bitcoin Core IPC mining: mounts ${APP_BITCOIN_DATA_DIR}:/bitcoin:ro read-only
+    on ckpool (never on ui), sets ipcmining to /bitcoin/${APP_BITCOIN_IPC_SOCKET_RELATIVE_PATH:-node.sock}
+    on fresh installs with RPC + ZMQ fallback intact, and waits up to 30s at startup
+    only when APP_BITCOIN_IPC_ENABLED=true so node.sock is ready before CKPool's
+    startup check (zero delay on Bitcoin Knots or non-IPC nodes).
+  - Hardened Config API: requires a per-app Bearer token (BASSIN_CONFIG_TOKEN
+    backed by Umbrel's deterministic app password) inside the Docker network,
+    enforces a strict key allowlist blocking donation, btcaddress, logdir, proxy,
+    and redirecturl, and confines SV2/IPC paths to /sv2/ and /bitcoin/.
+  - Rental-safe Settings: removes auto-save and 2s config polling in favor of
+    explicit Save (no restart) and Save & Restart Pool (with active-worker
+    confirmation and gated .reload-trigger). Logs remain readable without unlocking.
+  - Includes 2.1.16 low-RAM 2-container stack, code-split UI, and 3 built-in
+    umbrelOS widgets (Pool Overview, Worker Best Diff Leaderboard, Hashrate Averages).
 port: 5009
 submitter: blockdyor
 developer: blockdyor
@@ -48,7 +50,7 @@ gallery:
   - https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bassin/gallery_3.jpg
 path: ""
 defaultUsername: ""
-defaultPassword: ""
+deterministicPassword: true
 widgets:
   - id: "stats"
     type: "four-stats"

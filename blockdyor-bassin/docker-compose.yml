@@ -33,12 +33,15 @@ services:
       - APP_BITCOIN_RPC_USER=${APP_BITCOIN_RPC_USER}
       - APP_BITCOIN_RPC_PASS=${APP_BITCOIN_RPC_PASS}
       - APP_BITCOIN_ZMQ_HASHBLOCK_PORT=${APP_BITCOIN_ZMQ_HASHBLOCK_PORT}
+      - APP_BITCOIN_IPC_SOCKET_RELATIVE_PATH=${APP_BITCOIN_IPC_SOCKET_RELATIVE_PATH:-node.sock}
   ckpool:
     image: ghcr.io/blockdyor/docker-ckpool-solo:v1.2.0-2@sha256:9a17c69583798c0ea4d79f754e7bb4298ee3dfe848a1bd5f2136ad2adf0d98b4
     entrypoint: ["/bin/sh", "/opt/bassin/ckpool-start.sh", "-k", "-B", "-c", "/config/ckpool.conf"]
     user: "1000:1000"
     environment:
       - MALLOC_ARENA_MAX=2
+      - APP_BITCOIN_IPC_ENABLED=${APP_BITCOIN_IPC_ENABLED:-false}
+      - APP_BITCOIN_IPC_SOCKET_RELATIVE_PATH=${APP_BITCOIN_IPC_SOCKET_RELATIVE_PATH:-node.sock}
     depends_on:
       init:
         condition: service_completed_successfully
@@ -49,13 +52,16 @@ services:
       - "3457:3336/tcp"
       - "3458:3337/tcp"
     volumes:
+      - ${APP_BITCOIN_DATA_DIR}:/bitcoin:ro
       - ${APP_DATA_DIR}/data/config:/config:ro
       - ${APP_DATA_DIR}/data/sv2:/sv2
       - ${APP_DATA_DIR}/data/www:/www
       - ${APP_DATA_DIR}/hooks/ckpool-start.sh:/opt/bassin/ckpool-start.sh:ro
   ui:
-    image: ghcr.io/blockdyor/bassin-ui:e691554@sha256:ffea2cd14da0a0b191bd8576f52604c4fcec33ebd699c0979b144d6c81ca8395
+    image: ghcr.io/blockdyor/bassin-ui:14967e5@sha256:4060d833acde4b8976393a139583f9375189ccf896ad536ff2046b4e2f705806
     user: "1000:1000"
+    environment:
+      - BASSIN_CONFIG_TOKEN=${APP_PASSWORD}
     depends_on:
       init:
         condition: service_completed_successfully
