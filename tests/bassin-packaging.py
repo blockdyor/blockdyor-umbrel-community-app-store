@@ -15,10 +15,10 @@ class Packaging(unittest.TestCase):
                 conf = root / 'ckpool.conf'
                 entry = json.loads(subprocess.check_output(['yq', '-o=json', '.services.init.entrypoint', package / 'docker-compose.yml']))
                 argv = shlex.split(entry) if isinstance(entry, str) else entry
-                argv[-1] = argv[-1].replace('/config/', tmp + '/').replace('$$', '$')
+                argv[-1] = argv[-1].replace('/config/', tmp + '/').replace('/sv2', tmp + '/sv2').replace('$$', '$')
                 env = dict(os.environ, PATH=tmp + ':' + os.environ['PATH'], APP_BITCOIN_RPC_USER='fixture-user')
                 # apk is container-only; assert the requested ownership without needing root.
-                for name, body in [('apk','exit 0'), ('chown','test "$1" = 1000:1000 && test -f "$2"'), ('envsubst','printf partial; exit 42')]:
+                for name, body in [('apk','exit 0'), ('chown','test "$1" = 1000:1000 && test -e "$2"'), ('envsubst','printf partial; exit 42')]:
                     (root/name).write_text('#!/bin/sh\n' + body + '\n'); (root/name).chmod(0o755)
                 self.assertNotEqual(subprocess.run(argv, env=env).returncode, 0)
                 self.assertFalse(conf.exists(), 'failed render published a partial config')
