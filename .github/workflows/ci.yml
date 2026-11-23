@@ -34,5 +34,5 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Run Bitcoin Roots + Core Lightning + Bassin E2E simulation
+      - name: Run Bitcoin Roots + CLN + LND + Bassin + Public Pool E2E simulation
         run: node tests/e2e-roots-cln-bassin.mjs
