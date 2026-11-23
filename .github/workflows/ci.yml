@@ -1,0 +1,39 @@
+name: Store CI and E2E Simulation
+
+on:
+  push:
+    branches: ['master']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  packaging:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends gettext-base jq python3-yaml shellcheck
+          curl -fsSL https://github.com/mikefarah/yq/releases/download/v4.45.4/yq_linux_amd64 -o /tmp/yq
+          sudo install -m 0755 /tmp/yq /usr/local/bin/yq
+      - name: Run Bassin packaging tests
+        run: python3 tests/bassin-packaging.py
+      - name: Run Bitcoin Roots packaging tests
+        run: python3 tests/bitcoin-roots-packaging.py
+
+  e2e-simulation:
+    needs: packaging
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Run Bitcoin Roots + Core Lightning + Bassin E2E simulation
+        run: node tests/e2e-roots-cln-bassin.mjs
