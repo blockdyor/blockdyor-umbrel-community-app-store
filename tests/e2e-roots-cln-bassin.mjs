@@ -379,18 +379,24 @@ networks:
 	console.log('==> Testing zero-re-sync chain data migration (moving blocks, chainstate, indexes)...')
 	compose(rootsProject, rootsFiles, rootsEnv, 'stop', 'app')
 	const migratedDir = path.join(workDir, 'migrated-bitcoin-data')
-	await mkdir(path.join(migratedDir, 'regtest'), {recursive: true})
 	const srcRegtest = path.join(rootsDir, 'data/bitcoin/regtest')
-	await cp(path.join(srcRegtest, 'blocks'), path.join(migratedDir, 'regtest/blocks'), {recursive: true})
-	await cp(path.join(srcRegtest, 'chainstate'), path.join(migratedDir, 'regtest/chainstate'), {recursive: true})
-	await cp(path.join(srcRegtest, 'indexes'), path.join(migratedDir, 'regtest/indexes'), {recursive: true})
-	// Wipe old bitcoin datadir completely (simulating fresh Bitcoin Roots install) and move only blocks/chainstate/indexes in
-	await rm(path.join(rootsDir, 'data/bitcoin'), {recursive: true, force: true})
-	await mkdir(path.join(rootsDir, 'data/bitcoin/regtest'), {recursive: true})
-	await cp(path.join(migratedDir, 'regtest/blocks'), path.join(srcRegtest, 'blocks'), {recursive: true})
-	await cp(path.join(migratedDir, 'regtest/chainstate'), path.join(srcRegtest, 'chainstate'), {recursive: true})
-	await cp(path.join(migratedDir, 'regtest/indexes'), path.join(srcRegtest, 'indexes'), {recursive: true})
-	run('chmod', ['-R', 'a+rwx', path.join(rootsDir, 'data/bitcoin')])
+	// Inside the container bitcoind runs as UID 1000 with mode 0700; use sudo on runners where host UID != 1000
+	run('sudo', [
+		'bash',
+		'-euo',
+		'pipefail',
+		'-c',
+		`
+mkdir -p "${migratedDir}/regtest"
+cp -a "${srcRegtest}/blocks" "${srcRegtest}/chainstate" "${migratedDir}/regtest/"
+[ -d "${srcRegtest}/indexes" ] && cp -a "${srcRegtest}/indexes" "${migratedDir}/regtest/"
+rm -rf "${rootsDir}/data/bitcoin"
+mkdir -p "${srcRegtest}"
+mv "${migratedDir}/regtest/blocks" "${migratedDir}/regtest/chainstate" "${srcRegtest}/"
+[ -d "${migratedDir}/regtest/indexes" ] && mv "${migratedDir}/regtest/indexes" "${srcRegtest}/"
+chown -R 1000:1000 "${rootsDir}/data/bitcoin"
+`,
+	])
 
 	compose(rootsProject, rootsFiles, rootsEnv, 'up', '-d', 'app')
 	await until('Migrated Bitcoin Roots boots immediately at height 107 without re-sync', () => {
@@ -399,6 +405,14 @@ networks:
 		return info
 	})
 	console.log('PASS: Migrated Bitcoin Roots resumed at height 107 with zero re-sync')
+
+	// Also verify Core Lightning reconnects seamlessly after Bitcoin Roots restarted with migrated data
+	const clnPostMigration = await until('Core Lightning stays synced at height 107 after migration', () => {
+		const info = lcli('getinfo')
+		assert.equal(info.blockheight, 107)
+		return info
+	})
+	console.log('PASS: Core Lightning remained connected at height', clnPostMigration.blockheight)
 
 	console.log('\nALL E2E CHECKS PASSED: Bitcoin Roots (10333/10332) + Core Lightning + Bassin + Chain Migration')
 } catch (error) {
@@ -421,5 +435,9 @@ networks:
 	try {
 		run('docker', ['network', 'rm', networkName])
 	} catch {}
-	await rm(workDir, {recursive: true, force: true}).catch(() => {})
+	await rm(workDir, {recursive: true, force: true}).catch(() => {
+		try {
+			run('sudo', ['rm', '-rf', workDir])
+		} catch {}
+	})
 }
