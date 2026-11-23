@@ -7,7 +7,7 @@ description: >-
   Run a Bitcoin solo mining pool on your Umbrel with no pool fee. Shares track your miners' work; they do not earn regular payouts.
 
 
-  Keep Umbrel's Bitcoin Node app running and fully synchronized. After installing Bassin, open Connect for Stratum V1 (port 3456) and Noise-encrypted Stratum V2 (port 3457) details. Optional Stratum V2 Job Declaration (port 3458) can be enabled from Settings → Stratum V2 when Bitcoin Core's IPC Mining Interface is active. Use your own Bitcoin receiving address followed by a dot and a worker name as the miner username, and x as the password.
+  Keep Umbrel's Bitcoin Node app running and fully synchronized. After installing Bassin, open Connect for Stratum V1 (port 3456) details. Optional Noise-encrypted Stratum V2 (port 3457) and Job Declaration (port 3458, with Bitcoin Core's IPC Mining Interface) can be enabled from Settings → Stratum V2. Use your own Bitcoin receiving address followed by a dot and a worker name as the miner username, and x as the password.
 
 
   Already running Bassin from the official store? Back up its data and stop it before switching. The two apps use separate data directories but need the same Stratum ports. See https://github.com/blockdyor/bassin/blob/main/docs/getting-started.md
@@ -18,11 +18,11 @@ category: bitcoin
 dependencies:
   - bitcoin
 releaseNotes: >-
-  Fixes Stratum V1 port 3456 refusing connections in 2.1.17 when Stratum V2 is enabled.
+  Fixes Stratum V1 port 3456 refusing connections in 2.1.17 and makes Stratum V2 opt-in by default.
 
 
-  - Restores explicit Stratum V1 listener (serverurl 0.0.0.0:3333) alongside Stratum V2 (0.0.0.0:3336) in ckpool.conf so port 3456 and port 3457 listen simultaneously (automatically migrates existing 2.1.17 installs)
-  - Settings → Stratum V2 now keeps serverurl configured when toggling Stratum V2 or Job Declaration on and warns if Stratum V1 is missing
+  - Restores explicit Stratum V1 listener (serverurl 0.0.0.0:3333) so port 3456 works reliably out of the box and automatically repairs existing 2.1.17 installs
+  - Stratum V2 (port 3457) is now off by default on fresh installs and upgrades; enable it anytime from Settings → Stratum V2 (which keeps Stratum V1 port 3456 active alongside it)
 
 
   Full changelog: https://github.com/blockdyor/bassin/blob/main/docs/whats-new.md
