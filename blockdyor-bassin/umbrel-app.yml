@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "2.1.17"
+version: "2.1.18"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
@@ -18,14 +18,11 @@ category: bitcoin
 dependencies:
   - bitcoin
 releaseNotes: >-
-  This update adds Stratum V2, Bitcoin Core IPC mining, and makes Settings safer to use while mining.
+  Fixes Stratum V1 port 3456 refusing connections in 2.1.17 when Stratum V2 is enabled.
 
 
-  - Stratum V2 with encrypted connections on port 3457 (Stratum V1 stays on 3456; optional Job Declaration on 3458 can be enabled in Settings)
-  - Support for Bitcoin Core's mining interface (IPC) when enabled in Bitcoin Node, with automatic fallback to RPC and ZMQ (works with both Bitcoin Core and Bitcoin Knots)
-  - Settings now requires your Bassin app password and uses Save and Save & Restart Pool, so the pool only restarts when you choose
-  - New Worker Best Diff Leaderboard and Hashrate Averages widgets
-  - Lower memory use
+  - Restores explicit Stratum V1 listener (serverurl 0.0.0.0:3333) alongside Stratum V2 (0.0.0.0:3336) in ckpool.conf so port 3456 and port 3457 listen simultaneously (automatically migrates existing 2.1.17 installs)
+  - Settings → Stratum V2 now keeps serverurl configured when toggling Stratum V2 or Job Declaration on and warns if Stratum V1 is missing
 
 
   Full changelog: https://github.com/blockdyor/bassin/blob/main/docs/whats-new.md
