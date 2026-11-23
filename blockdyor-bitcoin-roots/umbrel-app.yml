@@ -6,7 +6,7 @@ storage:
   dataRoot: data
 category: bitcoin
 name: Bitcoin Roots
-version: "1.4.0-roots.1"
+version: "1.4.0-roots.1-policy.1"
 tagline: Run your personal Bitcoin Roots node
 icon: https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bitcoin-roots/icon.png
 description: >-
@@ -38,11 +38,14 @@ gallery: []
 path: ""
 defaultPassword: ""
 releaseNotes: >-
-  Adds native Umbrel Bitcoin provider support (implements: bitcoin) with full
-  APP_BITCOIN_* exports for Core Lightning, Bassin (including IPC mining), LND,
-  and Electrs. Moves web UI port to 2111 to avoid conflicting with Core
-  Lightning's WebSocket port (2106) and Bitcoin Knots (2105). Uses standard
-  Bitcoin P2P/RPC ports 8333/8332.
+  Adds a dedicated Relay & Mining Policy tab in Settings exposing all Bitcoin
+  Roots policy filters (datacarrier, datacarriersize, datacarriercost,
+  rejecttokens, rejectparasites, permitbaremultisig, permitbarepubkey,
+  permitephemeral, mempoolreplacement, mempooltruc, spkreuse, maxscriptsize,
+  bytespersigopstrict, dustdynamic, blockmaxsize, blockmaxweight,
+  blockprioritysize, and more). Also includes native Umbrel Bitcoin provider
+  support (implements: bitcoin) for Core Lightning, Bassin, LND, and Electrs
+  with web UI on port 2111 and standard P2P/RPC ports 8333/8332.
 widgets:
   - id: "stats"
     type: "four-stats"
