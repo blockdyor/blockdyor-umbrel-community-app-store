@@ -16,7 +16,7 @@
 <p align="center">
   <a href="https://github.com/blockdyor/blockdyor-umbrel-community-app-store/stargazers"><img src="https://img.shields.io/github/stars/blockdyor/blockdyor-umbrel-community-app-store?style=flat-square&color=111111&label=stars" alt="Stars"></a>
   <img src="https://img.shields.io/badge/umbrelOS-1.1%2B-111111?style=flat-square" alt="umbrelOS 1.1+">
-  <img src="https://img.shields.io/badge/apps-3-111111?style=flat-square" alt="3 apps">
+  <img src="https://img.shields.io/badge/apps-2-111111?style=flat-square" alt="2 apps">
   <img src="https://img.shields.io/badge/arch-amd64%20%7C%20arm64-111111?style=flat-square" alt="amd64 and arm64">
   <a href="https://blockdyor.com"><img src="https://img.shields.io/badge/web-blockdyor.com-F7931A?style=flat-square" alt="blockdyor.com"></a>
 </p>
@@ -25,8 +25,6 @@
   <a href="#bassin"><img src="blockdyor-bassin/icon.svg" width="84" height="84" alt="Bassin"></a>
   &nbsp;&nbsp;&nbsp;&nbsp;
   <a href="#bitcoin-roots"><img src="blockdyor-bitcoin-roots/icon.svg" width="84" height="84" alt="Bitcoin Roots"></a>
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="#memos"><img src="https://raw.githubusercontent.com/usememos/memos/main/web/public/android-chrome-512x512.png" width="84" height="84" alt="Memos"></a>
 </p>
 
 <p align="center">
@@ -35,7 +33,6 @@
     <a href="#add-to-umbrelos">Quick Start</a> &middot;
     <a href="#bassin">Bassin</a> &middot;
     <a href="#bitcoin-roots">Bitcoin Roots</a> &middot;
-    <a href="#memos">Memos</a> &middot;
     <a href="#ports--network">Ports &amp; Network</a> &middot;
     <a href="#faq">FAQ</a>
   </sub>
@@ -61,7 +58,6 @@ https://github.com/blockdyor/blockdyor-umbrel-community-app-store
 | :-: | --- | --- | --- | :-: | --- |
 | <a href="#bassin"><img src="blockdyor-bassin/icon.svg" width="44" height="44" alt="Bassin"></a> | [**Bassin**](#bassin)<br><sub>`blockdyor-bassin`</sub> | `2.1.18` | Bitcoin | `5009` | 0%-fee solo Bitcoin mining pool (CKPool) with Stratum V1 (`3456`), opt-in Noise-encrypted Stratum V2 (`3457`), IPC mining, live Settings, and dashboard widgets. |
 | <a href="#bitcoin-roots"><img src="blockdyor-bitcoin-roots/icon.svg" width="44" height="44" alt="Bitcoin Roots"></a> | [**Bitcoin Roots**](#bitcoin-roots)<br><sub>`blockdyor-bitcoin-roots`</sub> | `1.4.0-roots.1-blockdyor.2` | Bitcoin | `2111` | Bitcoin Roots (`v30.3-roots.1`) full node with Relay &amp; Mining Policy UI, persistent Tor &amp; I2P, Plan-B dark UI, and `implements: bitcoin` for CLN / Bassin / LND / Electrs. |
-| <a href="#memos"><img src="https://raw.githubusercontent.com/usememos/memos/main/web/public/android-chrome-512x512.png" width="44" height="44" alt="Memos"></a> | [**Memos**](#memos)<br><sub>`blockdyor-memos`</sub> | `0.24.2` | Productivity | `5230` | Privacy-first, lightweight self-hosted Markdown note-taking service with instant capture and local storage. |
 
 ---
 
@@ -153,36 +149,12 @@ https://github.com/blockdyor/blockdyor-umbrel-community-app-store
 
 ---
 
-## Memos
-
-<table>
-  <tr>
-    <td width="96" align="center" valign="middle">
-      <img src="https://raw.githubusercontent.com/usememos/memos/main/web/public/android-chrome-512x512.png" width="76" height="76" alt="Memos">
-    </td>
-    <td>
-      <strong>Privacy-First Note-Taking</strong> &middot; <code>blockdyor-memos</code> &middot; <code>v0.24.2</code><br>
-      Lightweight self-hosted knowledge management and Markdown note-taking service with complete local data ownership, media attachments, and REST API.<br>
-      <sub>
-        <a href="blockdyor-memos/umbrel-app.yml">Manifest</a> &middot;
-        <a href="blockdyor-memos/docker-compose.yml">Compose</a> &middot;
-        <a href="https://www.usememos.com">Website</a> &middot;
-        <a href="https://github.com/usememos/memos">Source</a> &middot;
-        <a href="https://github.com/usememos/memos/issues">Issues</a>
-      </sub>
-    </td>
-  </tr>
-</table>
-
----
-
 ## Ports & Network
 
 | App | App ID | Web UI | Published Host Ports | Internal Static IPs |
 | --- | --- | :-: | --- | --- |
 | **Bassin** | `blockdyor-bassin` | `5009` | `3456` (Stratum V1), `3457` (Stratum V2), `3458` (SV2 JD) | Dynamic (`app_proxy`) |
 | **Bitcoin Roots** | `blockdyor-bitcoin-roots` | `2111` | `8333` (P2P), `8332` (RPC) | `10.21.120.8` (node), `.9` (Tor), `.10` (I2P) |
-| **Memos** | `blockdyor-memos` | `5230` | — | Dynamic (`app_proxy`) |
 
 ---
 
