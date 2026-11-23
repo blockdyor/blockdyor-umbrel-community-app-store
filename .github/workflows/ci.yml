@@ -19,7 +19,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends gettext-base jq python3-yaml shellcheck
-          curl -fsSL https://github.com/mikefarah/yq/releases/download/v4.45.4/yq_linux_amd64 -o /tmp/yq
+          curl --proto '=https' --tlsv1.2 -fsSL https://github.com/mikefarah/yq/releases/download/v4.45.4/yq_linux_amd64 -o /tmp/yq
           sudo install -m 0755 /tmp/yq /usr/local/bin/yq
       - name: Run Bassin packaging tests
         run: python3 tests/bassin-packaging.py

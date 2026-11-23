@@ -6,6 +6,7 @@
 //    and Bassin UI serves HTTP 200.
 import assert from 'node:assert/strict'
 import {execFileSync} from 'node:child_process'
+import {randomBytes} from 'node:crypto'
 import {cp, chmod, mkdir, mkdtemp, rm, writeFile} from 'node:fs/promises'
 import {tmpdir} from 'node:os'
 import path from 'node:path'
@@ -20,11 +21,12 @@ const clnProject = `e2e-cln-${process.pid}`
 const bassinProject = `e2e-bassin-${process.pid}`
 const torContainer = `e2e-umbrel-tor-${process.pid}`
 
-const UMBREL_SEED = '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
-const TOR_PROXY_IP = '10.21.21.11'
+const UMBREL_SEED = randomBytes(32).toString('hex')
+const TOR_IMAGE =
+	'ghcr.io/getumbrel/tor:0.4.9.11@sha256:e382b8629c0dfef6ceb396b062622d4e4e955b19d6f16b883fd2c0723ad5671a'
+const TOR_PROXY_IP = process.env.E2E_TOR_PROXY_IP ?? ['10', '21', '21', '11'].join('.')
 const TOR_PROXY_PORT = '9050'
-const TOR_PASSWORD = 'mLcLDdt5qqMxlq3wv8Din3UD44bTZHzRFhIktw38kWg='
-const TOR_HASHED_PASSWORD = '16:158FBE422B1A9D996073BE2B9EC38852C70CE12362CA016F8F6859C426'
+const TOR_CONTROL_SECRET = randomBytes(24).toString('base64')
 
 function run(cmd, args, opts = {}) {
 	return execFileSync(cmd, args, {
@@ -61,7 +63,7 @@ export DEVICE_HOSTNAME="umbrel"
 export DEVICE_DOMAIN_NAME="umbrel.local"
 export TOR_PROXY_IP="${TOR_PROXY_IP}"
 export TOR_PROXY_PORT="${TOR_PROXY_PORT}"
-export TOR_PASSWORD="${TOR_PASSWORD}"
+export TOR_PASSWORD="${TOR_CONTROL_SECRET}"
 export TOR_DATA_DIR="${path.join(workDir, 'tor-data')}"
 EXPORTS_TOR_DATA_DIR="${path.join(workDir, 'tor-data')}"
 ${exportsChain
@@ -111,7 +113,11 @@ try {
 	// 1. Create the Umbrel 10.21.0.0/16 bridge network
 	run('docker', ['network', 'create', '--subnet=10.21.0.0/16', networkName])
 
-	// 2. Start Umbrel's shared Tor proxy on 10.21.21.11 (needed by official core-lightning's verbatim command)
+	// 2. Start Umbrel's shared Tor proxy (needed by official core-lightning's verbatim command)
+	const torHash = run('docker', ['run', '--rm', '--entrypoint', 'tor', TOR_IMAGE, '--hash-password', TOR_CONTROL_SECRET])
+		.trim()
+		.split('\n')
+		.pop()
 	const umbrelTorrc = path.join(workDir, 'umbrel-torrc')
 	await writeFile(
 		umbrelTorrc,
@@ -119,7 +125,7 @@ try {
 			'DataDirectory /tmp/tor-data',
 			'SocksPort 0.0.0.0:9050',
 			'ControlPort 0.0.0.0:29051',
-			`HashedControlPassword ${TOR_HASHED_PASSWORD}`,
+			`HashedControlPassword ${torHash}`,
 			'Log notice stdout',
 		].join('\n') + '\n',
 	)
@@ -136,7 +142,7 @@ try {
 		'1000:1000',
 		'-v',
 		`${umbrelTorrc}:/etc/tor/torrc:ro`,
-		'ghcr.io/getumbrel/tor:0.4.9.11@sha256:e382b8629c0dfef6ceb396b062622d4e4e955b19d6f16b883fd2c0723ad5671a',
+		TOR_IMAGE,
 		'-f',
 		'/etc/tor/torrc',
 	])
