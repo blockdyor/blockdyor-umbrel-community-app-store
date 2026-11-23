@@ -474,7 +474,7 @@ networks:
 		lndOverride,
 		`services:
   lnd:
-    ports: !reset
+    ports: !override
       - '127.0.0.1:18081:8080'
 `,
 	)
@@ -501,7 +501,7 @@ networks:
 
 	const lndMacaroonPath = path.join(lndDir, 'data/lnd/data/chain/bitcoin/regtest/admin.macaroon')
 	const lndMacaroonHex = await until('LND creates admin.macaroon & syncs to Bitcoin Roots at height 107', async () => {
-		const rawMacaroon = execFileSync('sudo', ['cat', lndMacaroonPath])
+		const rawMacaroon = execFileSync('/usr/bin/sudo', ['cat', lndMacaroonPath])
 		const macaroonHex = rawMacaroon.toString('hex')
 		const info = await lndRest('GET', '/v1/getinfo', {ca: lndCa.ca, macaroonHex})
 		assert.equal(info.synced_to_chain, true, `LND not synced yet: ${JSON.stringify(info)}`)
@@ -594,7 +594,7 @@ networks:
 		publicPoolOverride,
 		`services:
   server:
-    ports: !reset
+    ports: !override
       - '127.0.0.1:12018:2018'
       - '127.0.0.1:12019:2019'
     environment:
