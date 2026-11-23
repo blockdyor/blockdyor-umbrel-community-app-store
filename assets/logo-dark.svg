@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none" role="img" aria-label="blockdyor">
+  <rect x="6" y="6" width="244" height="244" rx="56" fill="#141414" stroke="#2E2E2E" stroke-width="6"/>
+  <path fill="#FFFFFF" d="M76 28h28v76h78v100h-28v-72h-50v72h50v28H76V28Z"/>
+</svg>

@@ -1,35 +1,216 @@
-# blockdyor Community App Store for umbrelOS
+<p align="center">
+  <a href="https://blockdyor.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="assets/logo-dark.svg">
+      <img src="assets/logo-light.svg" width="120" height="120" alt="blockdyor">
+    </picture>
+  </a>
+</p>
 
-To install an app from this store, open the App Store on your Umbrel, choose Community App Stores, and add this repository URL:
+<h1 align="center">blockdyor Community App Store</h1>
+
+<p align="center">
+  <em>Self-hosted Bitcoin &amp; sovereignty apps for umbrelOS — digest-pinned, multi-arch, ready to run.</em>
+</p>
+
+<p align="center">
+  <a href="https://github.com/blockdyor/blockdyor-umbrel-community-app-store/stargazers"><img src="https://img.shields.io/github/stars/blockdyor/blockdyor-umbrel-community-app-store?style=flat-square&color=111111&label=stars" alt="Stars"></a>
+  <img src="https://img.shields.io/badge/umbrelOS-1.1%2B-111111?style=flat-square" alt="umbrelOS 1.1+">
+  <img src="https://img.shields.io/badge/apps-3-111111?style=flat-square" alt="3 apps">
+  <img src="https://img.shields.io/badge/arch-amd64%20%7C%20arm64-111111?style=flat-square" alt="amd64 and arm64">
+  <a href="https://blockdyor.com"><img src="https://img.shields.io/badge/web-blockdyor.com-F7931A?style=flat-square" alt="blockdyor.com"></a>
+</p>
+
+<p align="center">
+  <a href="#bassin"><img src="blockdyor-bassin/icon.svg" width="84" height="84" alt="Bassin"></a>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="#bitcoin-roots"><img src="blockdyor-bitcoin-roots/icon.svg" width="84" height="84" alt="Bitcoin Roots"></a>
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="#memos"><img src="https://raw.githubusercontent.com/usememos/memos/main/web/public/android-chrome-512x512.png" width="84" height="84" alt="Memos"></a>
+</p>
+
+<p align="center">
+  <sub>
+    <a href="#apps">Apps</a> &middot;
+    <a href="#add-to-umbrelos">Quick Start</a> &middot;
+    <a href="#bassin">Bassin</a> &middot;
+    <a href="#bitcoin-roots">Bitcoin Roots</a> &middot;
+    <a href="#memos">Memos</a> &middot;
+    <a href="#ports--network">Ports &amp; Network</a> &middot;
+    <a href="#faq">FAQ</a>
+  </sub>
+</p>
+
+---
+
+## Add to umbrelOS
+
+1. Open **App Store** on your Umbrel.
+2. Click the **&ctdot;** menu in the top-right corner and choose **Community App Stores**.
+3. Paste this repository URL and click **Add**:
 
 ```text
 https://github.com/blockdyor/blockdyor-umbrel-community-app-store
 ```
 
-## Install Bassin and connect a miner
+---
 
-1. Install the Bitcoin Node app (Bitcoin Core or Bitcoin Knots) on Umbrel and let it fully synchronize. Leave it running.
-2. Install **Bassin** from the blockdyor store. Open the dashboard from Umbrel (web port `5009`) and select **Connect → Stratum** (V1), **Connect → Stratum V2**, or **Connect → Worker Setup**.
-3. Configure your miner:
-   - **Stratum V1:** `stratum+tcp://<your-Umbrel-address>:3456`, username `<your-bitcoin-address>.<worker-name>`, password `x`.
-   - **Stratum V2 (Noise-encrypted):** `stratum2+tcp://<your-Umbrel-address>:3457/<authority-pubkey>` (shown with a QR code in **Connect → Stratum V2**), `user_identity` `<your-bitcoin-address>.<worker-name>`. (Optional Job Declaration listens on host port `3458` when enabled with Bitcoin Core v32.x IPC.)
+## Apps
 
-## Update or switch stores
+| | App | Version | Category | Web UI | Highlights |
+| :-: | --- | --- | --- | :-: | --- |
+| <a href="#bassin"><img src="blockdyor-bassin/icon.svg" width="44" height="44" alt="Bassin"></a> | [**Bassin**](#bassin)<br><sub>`blockdyor-bassin`</sub> | `2.1.18` | Bitcoin | `5009` | 0%-fee solo Bitcoin mining pool (CKPool) with Stratum V1 (`3456`), opt-in Noise-encrypted Stratum V2 (`3457`), IPC mining, live Settings, and dashboard widgets. |
+| <a href="#bitcoin-roots"><img src="blockdyor-bitcoin-roots/icon.svg" width="44" height="44" alt="Bitcoin Roots"></a> | [**Bitcoin Roots**](#bitcoin-roots)<br><sub>`blockdyor-bitcoin-roots`</sub> | `1.4.0-roots.1-blockdyor.2` | Bitcoin | `2111` | Bitcoin Roots (`v30.3-roots.1`) full node with Relay &amp; Mining Policy UI, persistent Tor &amp; I2P, Plan-B dark UI, and `implements: bitcoin` for CLN / Bassin / LND / Electrs. |
+| <a href="#memos"><img src="https://raw.githubusercontent.com/usememos/memos/main/web/public/android-chrome-512x512.png" width="44" height="44" alt="Memos"></a> | [**Memos**](#memos)<br><sub>`blockdyor-memos`</sub> | `0.24.2` | Productivity | `5230` | Privacy-first, lightweight self-hosted Markdown note-taking service with instant capture and local storage. |
 
-For an update, use the store you installed Bassin from. The [community manifest](blockdyor-bassin/umbrel-app.yml) lists its version and release notes; [Docker Compose](blockdyor-bassin/docker-compose.yml) pins its container images. An existing `data/config/ckpool.conf` is reused rather than regenerated from the template — existing installs can toggle Stratum V2 on directly in **Settings → Stratum V2**, and valid changes auto-save and reload CKPool automatically. If a previous first setup left a partial file, follow the [private backup and recovery instructions](https://github.com/blockdyor/bassin/blob/main/docs/getting-started.md#interrupted-first-setup); the update will not overwrite it.
+---
 
-The [official Umbrel listing](https://apps.umbrel.com/app/bassin) installs a separate app (`bassin`, web port `5008`). Switching to the community app (`blockdyor-bassin`) does not migrate your data. Both pools need host port `3456` (and 2.1.15 binds `3457`/`3458` for Stratum V2): stop the old pool before starting the new one.
+## Bassin
 
-Before switching or uninstalling, back up the stopped app's data directory, including `data/config/ckpool.conf`, `data/sv2/` (private Stratum V2 Noise keys), and the statistics in `data/www/pool/` and `data/www/users/`. These paths are relative to the installed app ID's directory. Keep the backup private and outside `data/www`, which the dashboard serves. Check the node settings before reusing a configuration and verify mining and statistics before removing the old data. See the [installation and migration guide](https://github.com/blockdyor/bassin/blob/main/docs/getting-started.md).
+<table>
+  <tr>
+    <td width="96" align="center" valign="middle">
+      <img src="blockdyor-bassin/icon.svg" width="76" height="76" alt="Bassin">
+    </td>
+    <td>
+      <strong>Solo Bitcoin Mining Pool (CKPool)</strong> &middot; <code>blockdyor-bassin</code> &middot; <code>v2.1.18</code><br>
+      0% pool fee solo mining pool for umbrelOS with simultaneous Stratum V1 &amp; opt-in Noise-encrypted Stratum V2, Bitcoin Core/Roots IPC mining (with RPC/ZMQ fallback), hardened Settings editor, and three Umbrel widgets.<br>
+      <sub>
+        <a href="blockdyor-bassin/umbrel-app.yml">Manifest</a> &middot;
+        <a href="blockdyor-bassin/docker-compose.yml">Compose</a> &middot;
+        <a href="https://github.com/blockdyor/bassin">Docs &amp; Source</a> &middot;
+        <a href="https://github.com/blockdyor/bassin/blob/main/docs/FAQ.md">FAQ</a> &middot;
+        <a href="https://github.com/blockdyor/bassin/issues">Issues</a>
+      </sub>
+    </td>
+  </tr>
+</table>
 
-For help, see the [Bassin FAQ](https://github.com/blockdyor/bassin/blob/main/docs/FAQ.md) or [report a Bassin issue](https://github.com/blockdyor/bassin/issues). Report vulnerabilities privately using the [security policy](https://github.com/blockdyor/bassin/blob/main/SECURITY.md); do not post RPC credentials.
+### Install & connect a miner
+
+1. Run a fully synchronized Bitcoin node on Umbrel (**Bitcoin Core**, **Bitcoin Knots**, or **Bitcoin Roots**) and leave it running.
+2. Install **Bassin** from this store, open the dashboard (web port `5009`), and select **Connect &rarr; Stratum** (V1), **Connect &rarr; Stratum V2**, or **Connect &rarr; Worker Setup**.
+3. Point your miner to your Umbrel:
+
+| Setting | Stratum V1 *(default)* | Stratum V2 *(opt-in, Noise-encrypted)* |
+| --- | --- | --- |
+| **Pool URL** | `stratum+tcp://<your-Umbrel-address>:3456` | `stratum2+tcp://<your-Umbrel-address>:3457/<authority-pubkey>` |
+| **Username / Identity** | `<your-bitcoin-address>.<worker-name>` | `<your-bitcoin-address>.<worker-name>` |
+| **Password** | `x` | *(unused)* |
+| **Extra port** | — | `3458` *(optional Job Declaration with IPC Mining Interface)* |
+
+> Enable Stratum V2 anytime in **Settings &rarr; Stratum V2** (Stratum V1 stays active on `3456`). Copy the authority public key or scan the QR code from **Connect &rarr; Stratum V2**.
+
+<details>
+<summary><strong>Updating, switching from the official store, and backups</strong></summary>
+
+- **Updates:** Update from the same store you installed Bassin from. An existing `data/config/ckpool.conf` is preserved on update rather than overwritten from the template. If an earlier first setup left a partial file, follow the [private backup and recovery instructions](https://github.com/blockdyor/bassin/blob/main/docs/getting-started.md#interrupted-first-setup).
+- **Official vs. Community store:** The [official Umbrel listing](https://apps.umbrel.com/app/bassin) installs a separate app (`bassin`, web port `5008`) with its own data directory. Both apps bind host Stratum ports (`3456`, plus `3457`/`3458` for Stratum V2) — stop one pool before starting the other.
+- **Backups:** Before switching or uninstalling, stop the app and back up `data/config/ckpool.conf`, `data/sv2/` (private Stratum V2 Noise keys), and stats under `data/www/pool/` and `data/www/users/`. Keep backups private and outside `data/www` (which the dashboard serves). See the [installation and migration guide](https://github.com/blockdyor/bassin/blob/main/docs/getting-started.md).
+- **Security:** Report vulnerabilities privately via the [security policy](https://github.com/blockdyor/bassin/blob/main/SECURITY.md); never post RPC credentials.
+
+</details>
+
+---
 
 ## Bitcoin Roots
 
-Install **Bitcoin Roots** (`blockdyor-bitcoin-roots`, [manifest](blockdyor-bitcoin-roots/umbrel-app.yml)) to run a [Bitcoin Roots](https://plan-b.foundation/bitcoin-roots) (`v30.3-roots.1`) full node with persistent Tor and I2P connectivity and web UI on port `2111`.
+<table>
+  <tr>
+    <td width="96" align="center" valign="middle">
+      <img src="blockdyor-bitcoin-roots/icon.svg" width="76" height="76" alt="Bitcoin Roots">
+    </td>
+    <td>
+      <strong>Personal Bitcoin Roots Node</strong> &middot; <code>blockdyor-bitcoin-roots</code> &middot; <code>v1.4.0-roots.1-blockdyor.2</code><br>
+      Full node powered by <a href="https://plan-b.foundation/bitcoin-roots">Bitcoin Roots</a> (<code>v30.3-roots.1</code>) with a Plan-B dark interface, dedicated <strong>Relay &amp; Mining Policy</strong> settings tab, persistent Tor &amp; I2P services, dashboard widgets, and native Umbrel Bitcoin provider support.<br>
+      <sub>
+        <a href="blockdyor-bitcoin-roots/umbrel-app.yml">Manifest</a> &middot;
+        <a href="blockdyor-bitcoin-roots/docker-compose.yml">Compose</a> &middot;
+        <a href="blockdyor-bitcoin-roots/exports.sh">Exports</a> &middot;
+        <a href="https://github.com/tiero/umbrel-bitcoin-roots">Upstream App</a> &middot;
+        <a href="https://github.com/blockdyor/umbrel-bitcoin-roots">Image Build Repo</a> &middot;
+        <a href="https://github.com/LuganoPlanB/bitcoin-roots">Bitcoin Roots Core</a>
+      </sub>
+    </td>
+  </tr>
+</table>
 
-- Declares `implements: [bitcoin]` and exports the canonical `APP_BITCOIN_*` variables so Bitcoin-dependent apps (such as Core Lightning, Bassin including IPC mining, LND, and Electrs) can select Bitcoin Roots as their Bitcoin node backend in Umbrel.
-- Bitcoin Roots publishes standard P2P port `8333` and RPC port `8332`: stop any other Bitcoin node app using those ports (such as Bitcoin Node / Bitcoin Core) before installing or starting it.
-- It uses its own data directory (`data/`) and does not migrate an existing node. Back up `data/tor` with your app data to preserve your `.onion` P2P and RPC addresses.
+### Key features
 
-This store also includes [Memos](blockdyor-memos/umbrel-app.yml).
+- **Full Relay & Mining Policy UI:** Configure `datacarrier`, `datacarriersize`, `datacarriercost`, `datacarrierfullcount`, `rejecttokens`, `rejectparasites`, `permitbaremultisig`, `permitbarepubkey`, `permitbareanchor`, `permitephemeral`, `mempoolreplacement`, `mempooltruc`, `spkreuse`, `maxscriptsize`, `bytespersigopstrict`, `dustdynamic`, `blockmaxsize`, `blockmaxweight`, and `blockprioritysize` directly in **Settings &rarr; Relay &amp; Mining Policy**.
+- **Native Umbrel Bitcoin Provider (`implements: bitcoin`):** Select **Bitcoin Roots** as the Bitcoin backend for **Core Lightning**, **Bassin** (including **IPC Mining Interface**), **LND**, **Electrs**, and other Bitcoin-dependent Umbrel apps.
+- **Persistent Tor & I2P:** Dedicated unprivileged Tor and I2P sidecars with persistent P2P and RPC `.onion` addresses displayed automatically in **Connect**.
+- **External Storage & Smart Backups:** Declares `storage.dataRoot: data` for umbrelOS storage relocation and excludes `blocks`, `chainstate`, and `indexes` from backups.
+
+<details>
+<summary><strong>Ports, coexistence with Bitcoin Core / Knots, and backups</strong></summary>
+
+- **Port `8333` (P2P) & `8332` (RPC):** Bitcoin Roots publishes standard Bitcoin ports `8333` and `8332`. Stop any other Bitcoin app using those ports (such as official **Bitcoin Node / Bitcoin Core**) before starting it.
+- **No conflict with Core Lightning or Bitcoin Knots:** The web UI runs on port `2111` (avoiding Bitcoin Core on `2100`, Core Lightning on `2103`/`2106`/`2107`/`2110`, and Bitcoin Knots on `2105`). Static internal IPs use `10.21.120.8–10`.
+- **Separate data directory & backups:** Bitcoin Roots uses its own `data/` directory and does not migrate an existing node. Back up `data/tor/` along with your app configuration to keep your `.onion` identities.
+
+</details>
+
+---
+
+## Memos
+
+<table>
+  <tr>
+    <td width="96" align="center" valign="middle">
+      <img src="https://raw.githubusercontent.com/usememos/memos/main/web/public/android-chrome-512x512.png" width="76" height="76" alt="Memos">
+    </td>
+    <td>
+      <strong>Privacy-First Note-Taking</strong> &middot; <code>blockdyor-memos</code> &middot; <code>v0.24.2</code><br>
+      Lightweight self-hosted knowledge management and Markdown note-taking service with complete local data ownership, media attachments, and REST API.<br>
+      <sub>
+        <a href="blockdyor-memos/umbrel-app.yml">Manifest</a> &middot;
+        <a href="blockdyor-memos/docker-compose.yml">Compose</a> &middot;
+        <a href="https://www.usememos.com">Website</a> &middot;
+        <a href="https://github.com/usememos/memos">Source</a> &middot;
+        <a href="https://github.com/usememos/memos/issues">Issues</a>
+      </sub>
+    </td>
+  </tr>
+</table>
+
+---
+
+## Ports & Network
+
+| App | App ID | Web UI | Published Host Ports | Internal Static IPs |
+| --- | --- | :-: | --- | --- |
+| **Bassin** | `blockdyor-bassin` | `5009` | `3456` (Stratum V1), `3457` (Stratum V2), `3458` (SV2 JD) | Dynamic (`app_proxy`) |
+| **Bitcoin Roots** | `blockdyor-bitcoin-roots` | `2111` | `8333` (P2P), `8332` (RPC) | `10.21.120.8` (node), `.9` (Tor), `.10` (I2P) |
+| **Memos** | `blockdyor-memos` | `5230` | — | Dynamic (`app_proxy`) |
+
+---
+
+## FAQ
+
+**Can I connect Core Lightning or Bassin directly to Bitcoin Roots?**
+Yes. `blockdyor-bitcoin-roots` declares `implements: [bitcoin]` and exports the full `APP_BITCOIN_*` contract (including ZMQ and IPC). Pick **Bitcoin Roots** as the Bitcoin node dependency when installing or configuring Core Lightning, Bassin, LND, or Electrs.
+
+**Can Bitcoin Roots run at the same time as Bitcoin Core?**
+Not simultaneously while both bind host ports `8333`/`8332`. Stop Bitcoin Core first before starting Bitcoin Roots. It runs cleanly alongside Bitcoin Knots (`2105` / `9333` / `9332`) and Core Lightning (`2103` / `2106` / `2107` / `2110`).
+
+**Are container images verified and multi-architecture?**
+Yes. Both **Bassin** and **Bitcoin Roots** pin every container image by `@sha256` multi-architecture manifest digest (`linux/amd64` + `linux/arm64`) built and integration-tested in GitHub Actions.
+
+**How do I run the local packaging tests?**
+```bash
+python3 tests/bassin-packaging.py
+python3 tests/bitcoin-roots-packaging.py
+```
+
+---
+
+## Star History
+
+<a href="https://www.star-history.com/blockdyor/blockdyor-umbrel-community-app-store#history">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=blockdyor/blockdyor-umbrel-community-app-store&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=blockdyor/blockdyor-umbrel-community-app-store&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=blockdyor/blockdyor-umbrel-community-app-store&type=Date" />
+ </picture>
+</a>
