@@ -6,7 +6,7 @@ services:
       APP_HOST: ${APP_BITCOIN_ROOTS_NODE_IP}
       APP_PORT: 3000
   app:
-    image: ghcr.io/blockdyor/umbrel-bitcoin-roots:v1.4.0-roots.1-blockdyor.2@sha256:45390f5285fba34446c917889dec0fcafb49de0384a93a3a38b1645a4c944ae8
+    image: ghcr.io/blockdyor/umbrel-bitcoin-roots:v1.4.0-roots.1-blockdyor.3@sha256:3ff010a2bfb3be817c9ca437ab314bc7ea3a25a7e8e5c2d53d0e50dbfa53ee25
     user: '1000:1000'
     restart: on-failure
     stop_grace_period: 15m30s
@@ -68,7 +68,7 @@ services:
     image: purplei2p/i2pd:release-2.59.0@sha256:257653c18ce0b127ef480e3d8373b3ddbf1495e842674c8cfc59909be0015979
     user: 'root'
     restart: on-failure
-    command: --sam.enabled=true --sam.address=0.0.0.0 --sam.port=7656 --loglevel=error
+    command: --sam.enabled=true --sam.address=0.0.0.0 --sam.port=7656 --notransit --loglevel=error
     volumes:
       - ${APP_DATA_DIR}/data/i2pd:/home/i2pd/data
     networks:

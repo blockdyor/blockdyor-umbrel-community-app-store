@@ -6,7 +6,7 @@ storage:
   dataRoot: data
 category: bitcoin
 name: Bitcoin Roots
-version: "1.4.0-roots.1-blockdyor.3"
+version: "1.4.0-roots.1-blockdyor.4"
 tagline: Run your personal Bitcoin Roots node
 icon: https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bitcoin-roots/icon.png
 description: >-
@@ -39,12 +39,12 @@ gallery: []
 path: ""
 defaultPassword: ""
 releaseNotes: >-
-  Moves host P2P/RPC ports to 10333/10332 (matching Bitcoin Knots' 9333/9332
-  side-by-side pattern) so Bitcoin Roots installs cleanly alongside Bitcoin Core
-  and Bitcoin Knots without port conflicts, enabling zero-re-sync chain data
-  migration before uninstalling your old node. Keeps the Plan-B dark UI, Relay
-  & Mining Policy tab, and full implements: bitcoin support for Core Lightning,
-  Bassin, LND, and Electrs.
+  Reduces idle RAM usage by ~350+ MB (replaces eager cities.json and geoip-lite
+  memory tables with zero-RAM on-disk GeoIP binary search, makes ZMQ hashtx and
+  full block fetches demand-driven, caps V8 heap at 192 MB, and runs i2pd with
+  --notransit) and resolves all SonarCloud bugs and security findings. Keeps
+  non-colliding 10333/10332/2111 ports, Plan-B dark UI, Relay & Mining Policy
+  tab, and full implements: bitcoin support.
 widgets:
   - id: "stats"
     type: "four-stats"
