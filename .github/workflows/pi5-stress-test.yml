@@ -1,0 +1,41 @@
+name: Raspberry Pi 5 Real-World Stress & Ecosystem Suite
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * 1'
+  push:
+    branches: ['master']
+    paths:
+      - 'blockdyor-bitcoin-roots/**'
+      - 'tests/e2e-pi5-stress.mjs'
+      - '.github/workflows/pi5-stress-test.yml'
+  pull_request:
+    paths:
+      - 'blockdyor-bitcoin-roots/**'
+      - 'tests/e2e-pi5-stress.mjs'
+      - '.github/workflows/pi5-stress-test.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  pi5-stress-suite:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: 'ARM64 (Raspberry Pi 5)'
+            runner: ubuntu-24.04-arm
+          - name: 'x86_64'
+            runner: ubuntu-24.04
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Run 10-stage real-world Pi 5 stress & ecosystem test
+        run: node tests/e2e-pi5-stress.mjs
