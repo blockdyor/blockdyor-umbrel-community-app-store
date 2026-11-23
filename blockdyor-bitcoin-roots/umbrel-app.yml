@@ -1,5 +1,7 @@
 manifestVersion: 1.1
 id: blockdyor-bitcoin-roots
+implements:
+  - bitcoin
 storage:
   dataRoot: data
 category: bitcoin
@@ -15,6 +17,11 @@ description: >-
   in the Connect panel after Tor starts.
 
 
+  Declares Umbrel Bitcoin node compatibility (implements: bitcoin) so apps such
+  as Core Lightning, Bassin, LND, and Electrs can select Bitcoin Roots as their
+  Bitcoin node provider.
+
+
   This app publishes P2P port 8333 and RPC port 8332, so stop any other Bitcoin
   node app using those ports (such as Bitcoin Node / Bitcoin Core) before
   installing or starting it. It uses its own data directory and does not migrate
@@ -26,15 +33,16 @@ repo: https://github.com/tiero/umbrel-bitcoin-roots
 support: https://github.com/tiero/umbrel-bitcoin-roots/issues
 submitter: blockdyor
 submission: https://github.com/blockdyor/blockdyor-umbrel-community-app-store
-port: 2106
+port: 2111
 gallery: []
 path: ""
 defaultPassword: ""
 releaseNotes: >-
-  Initial blockdyor community store release of Bitcoin Roots (v30.3-roots.1)
-  with persistent Tor and I2P services, multi-architecture (amd64/arm64) image,
-  and dashboard widgets. Uses web UI port 2106 (avoiding conflict with Bitcoin
-  Knots on 2105) and standard Bitcoin P2P/RPC ports 8333/8332.
+  Adds native Umbrel Bitcoin provider support (implements: bitcoin) with full
+  APP_BITCOIN_* exports for Core Lightning, Bassin (including IPC mining), LND,
+  and Electrs. Moves web UI port to 2111 to avoid conflicting with Core
+  Lightning's WebSocket port (2106) and Bitcoin Knots (2105). Uses standard
+  Bitcoin P2P/RPC ports 8333/8332.
 widgets:
   - id: "stats"
     type: "four-stats"

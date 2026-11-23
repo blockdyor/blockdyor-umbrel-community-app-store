@@ -1,4 +1,4 @@
-"""Run with python3 tests/bitcoin-roots-packaging.py [package ...]; needs PyYAML (or yq v4), bash, shellcheck (optional)."""
+"""Run with python3 tests/bitcoin-roots-packaging.py [package ...]; needs PyYAML (or yq v4), bash, jq, shellcheck (optional)."""
 import json
 import os
 import re
@@ -40,7 +40,8 @@ class BitcoinRootsPackaging(unittest.TestCase):
                     manifest["id"].startswith(f"{store_id}-"),
                     f"app id {manifest['id']} must start with store prefix {store_id}-",
                 )
-                self.assertEqual(manifest["port"], 2106)
+                self.assertEqual(manifest["implements"], ["bitcoin"])
+                self.assertEqual(manifest["port"], 2111)
                 self.assertEqual(manifest["storage"], {"dataRoot": "data"})
                 self.assertTrue(manifest["icon"].startswith("https://"))
                 self.assertTrue((package / "icon.png").is_file())
@@ -56,32 +57,104 @@ class BitcoinRootsPackaging(unittest.TestCase):
                 )
                 self.assertIn("data/bitcoin/blocks", manifest["backupIgnore"])
 
-    def test_exports_sh(self):
-        for package in packages:
-            with self.subTest(package=package):
-                exports = package / "exports.sh"
-                self.assertTrue(exports.is_file())
-                script = f"""
+    def test_exports_sh_self_and_dependents(self):
+        required_bitcoin_vars = [
+            "APP_BITCOIN_NODE_IP",
+            "APP_BITCOIN_TOR_PROXY_IP",
+            "APP_BITCOIN_I2P_DAEMON_IP",
+            "APP_BITCOIN_DATA_DIR",
+            "APP_BITCOIN_RPC_PORT",
+            "APP_BITCOIN_P2P_PORT",
+            "APP_BITCOIN_P2P_WHITEBIND_PORT",
+            "APP_BITCOIN_TOR_PORT",
+            "APP_BITCOIN_ZMQ_RAWBLOCK_PORT",
+            "APP_BITCOIN_ZMQ_RAWTX_PORT",
+            "APP_BITCOIN_ZMQ_HASHBLOCK_PORT",
+            "APP_BITCOIN_ZMQ_SEQUENCE_PORT",
+            "APP_BITCOIN_ZMQ_HASHTX_PORT",
+            "APP_BITCOIN_NETWORK",
+            "APP_BITCOIN_NETWORK_ELECTRS",
+            "APP_BITCOIN_IPC_ENABLED",
+            "APP_BITCOIN_IPC_SOCKET_RELATIVE_PATH",
+            "APP_BITCOIN_RPC_USER",
+            "APP_BITCOIN_RPC_PASS",
+            "APP_BITCOIN_RPC_HIDDEN_SERVICE",
+            "APP_BITCOIN_P2P_HIDDEN_SERVICE",
+        ]
+
+        def source_exports(exports: Path, caller_app: str, data_root: Path):
+            script = f"""
 set -euo pipefail
 derive_entropy() {{ printf '%s' "$1" | sha256sum | cut -d ' ' -f 1; }}
-app_entropy_identifier=app-{package.name}-seed
+app_entropy_identifier="app-{caller_app}-seed"
+EXPORTS_APP_ID="{exports.parent.name}"
+EXPORTS_APP_DIR="/umbrel/app-data/{exports.parent.name}"
+EXPORTS_APP_DATA_DIR="{data_root}"
 before=$-
-source {exports}
+source "{exports}"
 [[ "$before" == "$-" ]]
-[[ "$APP_BITCOIN_ROOTS_NODE_IP" == "10.21.120.8" ]]
-[[ "$APP_BITCOIN_ROOTS_TOR_IP" == "10.21.120.9" ]]
-[[ "$APP_BITCOIN_ROOTS_I2P_IP" == "10.21.120.10" ]]
-[[ "$APP_BITCOIN_ROOTS_RPC_USER" == "umbrel" ]]
-first=$APP_BITCOIN_ROOTS_RPC_PASS
-[[ "$first" != "$APP_BITCOIN_ROOTS_TOR_PASSWORD" ]]
-source {exports}
-[[ "$first" == "$APP_BITCOIN_ROOTS_RPC_PASS" ]]
-printf '%s %s' "$APP_BITCOIN_ROOTS_RPC_PASS" "$APP_BITCOIN_ROOTS_TOR_PASSWORD"
+for k in {' '.join(required_bitcoin_vars + ['APP_BITCOIN_ROOTS_RPC_PASS', 'APP_BITCOIN_ROOTS_TOR_PASSWORD'])}; do
+  printf '%s=%s\\n' "$k" "${{!k}}"
+done
 """
-                out = subprocess.check_output(["bash", "-c", script], text=True)
-                rpc_pass, tor_pass = out.split(" ")
-                self.assertRegex(rpc_pass, r"^[a-f0-9]{64}$")
-                self.assertRegex(tor_pass, r"^[a-f0-9]{64}$")
+            out = subprocess.check_output(["bash", "-c", script], text=True)
+            return dict(line.split("=", 1) for line in out.strip().splitlines())
+
+        for package in packages:
+            with self.subTest(package=package), tempfile.TemporaryDirectory() as tmp:
+                exports = package / "exports.sh"
+                self.assertTrue(exports.is_file())
+                data_root = Path(tmp) / "data"
+                (data_root / "app").mkdir(parents=True)
+                (data_root / "tor/rpc").mkdir(parents=True)
+                (data_root / "tor/p2p").mkdir(parents=True)
+                rpc_onion = "a" * 56 + ".onion"
+                p2p_onion = "b" * 56 + ".onion"
+                (data_root / "tor/rpc/hostname").write_text(rpc_onion + "\n")
+                (data_root / "tor/p2p/hostname").write_text(p2p_onion + "\n")
+
+                # 1. Sourced by Bitcoin Roots itself (default mainnet, ipc off)
+                self_env = source_exports(exports, package.name, data_root)
+                self.assertEqual(self_env["APP_BITCOIN_NODE_IP"], "10.21.120.8")
+                self.assertEqual(self_env["APP_BITCOIN_TOR_PROXY_IP"], "10.21.120.9")
+                self.assertEqual(self_env["APP_BITCOIN_I2P_DAEMON_IP"], "10.21.120.10")
+                self.assertEqual(self_env["APP_BITCOIN_DATA_DIR"], str(data_root / "bitcoin"))
+                self.assertEqual(self_env["APP_BITCOIN_RPC_PORT"], "8332")
+                self.assertEqual(self_env["APP_BITCOIN_P2P_PORT"], "8333")
+                self.assertEqual(self_env["APP_BITCOIN_ZMQ_HASHBLOCK_PORT"], "28334")
+                self.assertEqual(self_env["APP_BITCOIN_NETWORK"], "mainnet")
+                self.assertEqual(self_env["APP_BITCOIN_NETWORK_ELECTRS"], "bitcoin")
+                self.assertEqual(self_env["APP_BITCOIN_IPC_ENABLED"], "false")
+                self.assertEqual(self_env["APP_BITCOIN_IPC_SOCKET_RELATIVE_PATH"], "node.sock")
+                self.assertEqual(self_env["APP_BITCOIN_RPC_HIDDEN_SERVICE"], rpc_onion)
+                self.assertEqual(self_env["APP_BITCOIN_P2P_HIDDEN_SERVICE"], p2p_onion)
+                self.assertRegex(self_env["APP_BITCOIN_RPC_PASS"], r"^[a-f0-9]{64}$")
+                self.assertRegex(self_env["APP_BITCOIN_ROOTS_TOR_PASSWORD"], r"^[a-f0-9]{64}$")
+                self.assertNotEqual(
+                    self_env["APP_BITCOIN_RPC_PASS"],
+                    self_env["APP_BITCOIN_ROOTS_TOR_PASSWORD"],
+                )
+
+                # 2. Sourced by dependent apps (Core Lightning, Bassin): must get identical RPC pass!
+                for dependent in ("core-lightning", "blockdyor-bassin", "lightning", "electrs"):
+                    dep_env = source_exports(exports, dependent, data_root)
+                    self.assertEqual(
+                        dep_env["APP_BITCOIN_RPC_PASS"],
+                        self_env["APP_BITCOIN_RPC_PASS"],
+                        f"dependent {dependent} derived a different RPC password",
+                    )
+                    self.assertEqual(dep_env["APP_BITCOIN_NODE_IP"], "10.21.120.8")
+                    self.assertEqual(dep_env["APP_BITCOIN_RPC_USER"], "umbrel")
+
+                # 3. Settings override: testnet4 + IPC enabled
+                (data_root / "app/settings.json").write_text(
+                    json.dumps({"chain": "testnet4", "ipc": True})
+                )
+                t4_env = source_exports(exports, "blockdyor-bassin", data_root)
+                self.assertEqual(t4_env["APP_BITCOIN_NETWORK"], "testnet4")
+                self.assertEqual(t4_env["APP_BITCOIN_NETWORK_ELECTRS"], "testnet4")
+                self.assertEqual(t4_env["APP_BITCOIN_IPC_ENABLED"], "true")
+                self.assertEqual(t4_env["APP_BITCOIN_IPC_SOCKET_RELATIVE_PATH"], "testnet4/node.sock")
 
     def test_tor_entrypoint(self):
         for package in packages:
@@ -139,7 +212,13 @@ printf '%s %s' "$APP_BITCOIN_ROOTS_RPC_PASS" "$APP_BITCOIN_ROOTS_TOR_PASSWORD"
                         digest_re,
                         f"service {svc_name} image must be digest-pinned: {image}",
                     )
-                self.assertEqual(services["app"]["ports"], ["8333:8333", "8332:8332"])
+                self.assertEqual(
+                    services["app"]["ports"],
+                    [
+                        "${APP_BITCOIN_ROOTS_P2P_PORT}:${APP_BITCOIN_ROOTS_P2P_PORT}",
+                        "${APP_BITCOIN_ROOTS_RPC_PORT}:${APP_BITCOIN_ROOTS_RPC_PORT}",
+                    ],
+                )
                 self.assertEqual(services["app"]["user"], "1000:1000")
                 self.assertEqual(services["tor"]["user"], "1000:1000")
                 self.assertEqual(services["i2p"]["user"], "root")

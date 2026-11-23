@@ -26,8 +26,9 @@ For help, see the [Bassin FAQ](https://github.com/blockdyor/bassin/blob/main/doc
 
 ## Bitcoin Roots
 
-Install **Bitcoin Roots** (`blockdyor-bitcoin-roots`, [manifest](blockdyor-bitcoin-roots/umbrel-app.yml)) to run a [Bitcoin Roots](https://plan-b.foundation/bitcoin-roots) (`v30.3-roots.1`) full node with persistent Tor and I2P connectivity and web UI on port `2106`.
+Install **Bitcoin Roots** (`blockdyor-bitcoin-roots`, [manifest](blockdyor-bitcoin-roots/umbrel-app.yml)) to run a [Bitcoin Roots](https://plan-b.foundation/bitcoin-roots) (`v30.3-roots.1`) full node with persistent Tor and I2P connectivity and web UI on port `2111`.
 
+- Declares `implements: [bitcoin]` and exports the canonical `APP_BITCOIN_*` variables so Bitcoin-dependent apps (such as Core Lightning, Bassin including IPC mining, LND, and Electrs) can select Bitcoin Roots as their Bitcoin node backend in Umbrel.
 - Bitcoin Roots publishes standard P2P port `8333` and RPC port `8332`: stop any other Bitcoin node app using those ports (such as Bitcoin Node / Bitcoin Core) before installing or starting it.
 - It uses its own data directory (`data/`) and does not migrate an existing node. Back up `data/tor` with your app data to preserve your `.onion` P2P and RPC addresses.
 
