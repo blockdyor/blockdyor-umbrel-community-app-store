@@ -27,7 +27,6 @@ jobs:
         run: python3 tests/bitcoin-roots-packaging.py
 
   e2e-simulation:
-    needs: packaging
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
