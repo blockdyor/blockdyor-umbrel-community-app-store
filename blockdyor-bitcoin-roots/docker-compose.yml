@@ -52,6 +52,7 @@ services:
     environment:
       TOR_CONTROL_PASSWORD: ${APP_BITCOIN_ROOTS_TOR_PASSWORD}
       BITCOIND_IP: ${APP_BITCOIN_ROOTS_NODE_IP}
+      RPC_PORT: ${APP_BITCOIN_ROOTS_RPC_PORT}
     volumes:
       - ${APP_DATA_DIR}/hooks/tor-entrypoint.sh:/scripts/tor-entrypoint.sh:ro
       - ${APP_DATA_DIR}/data:/data

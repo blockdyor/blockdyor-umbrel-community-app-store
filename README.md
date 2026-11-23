@@ -57,7 +57,7 @@ https://github.com/blockdyor/blockdyor-umbrel-community-app-store
 | | App | Version | Category | Web UI | Highlights |
 | :-: | --- | --- | --- | :-: | --- |
 | <a href="#bassin"><img src="blockdyor-bassin/icon.svg" width="44" height="44" alt="Bassin"></a> | [**Bassin**](#bassin)<br><sub>`blockdyor-bassin`</sub> | `2.1.18` | Bitcoin | `5009` | 0%-fee solo Bitcoin mining pool (CKPool) with Stratum V1 (`3456`), opt-in Noise-encrypted Stratum V2 (`3457`), IPC mining, live Settings, and dashboard widgets. |
-| <a href="#bitcoin-roots"><img src="blockdyor-bitcoin-roots/icon.svg" width="44" height="44" alt="Bitcoin Roots"></a> | [**Bitcoin Roots**](#bitcoin-roots)<br><sub>`blockdyor-bitcoin-roots`</sub> | `1.4.0-roots.1-blockdyor.2` | Bitcoin | `2111` | Bitcoin Roots (`v30.3-roots.1`) full node with Relay &amp; Mining Policy UI, persistent Tor &amp; I2P, Plan-B dark UI, and `implements: bitcoin` for CLN / Bassin / LND / Electrs. |
+| <a href="#bitcoin-roots"><img src="blockdyor-bitcoin-roots/icon.svg" width="44" height="44" alt="Bitcoin Roots"></a> | [**Bitcoin Roots**](#bitcoin-roots)<br><sub>`blockdyor-bitcoin-roots`</sub> | `1.4.0-roots.1-blockdyor.3` | Bitcoin | `2111` | Bitcoin Roots (`v30.3-roots.1`) full node with Relay &amp; Mining Policy UI, persistent Tor &amp; I2P, Plan-B dark UI, side-by-side ports (`10333`/`10332`), and `implements: bitcoin` for CLN / Bassin / LND / Electrs. |
 
 ---
 
@@ -117,7 +117,7 @@ https://github.com/blockdyor/blockdyor-umbrel-community-app-store
       <img src="blockdyor-bitcoin-roots/icon.svg" width="76" height="76" alt="Bitcoin Roots">
     </td>
     <td>
-      <strong>Personal Bitcoin Roots Node</strong> &middot; <code>blockdyor-bitcoin-roots</code> &middot; <code>v1.4.0-roots.1-blockdyor.2</code><br>
+      <strong>Personal Bitcoin Roots Node</strong> &middot; <code>blockdyor-bitcoin-roots</code> &middot; <code>v1.4.0-roots.1-blockdyor.3</code><br>
       Full node powered by <a href="https://plan-b.foundation/bitcoin-roots">Bitcoin Roots</a> (<code>v30.3-roots.1</code>) with a Plan-B dark interface, dedicated <strong>Relay &amp; Mining Policy</strong> settings tab, persistent Tor &amp; I2P services, dashboard widgets, and native Umbrel Bitcoin provider support.<br>
       <sub>
         <a href="blockdyor-bitcoin-roots/umbrel-app.yml">Manifest</a> &middot;
@@ -139,11 +139,31 @@ https://github.com/blockdyor/blockdyor-umbrel-community-app-store
 - **External Storage & Smart Backups:** Declares `storage.dataRoot: data` for umbrelOS storage relocation and excludes `blocks`, `chainstate`, and `indexes` from backups.
 
 <details>
-<summary><strong>Ports, coexistence with Bitcoin Core / Knots, and backups</strong></summary>
+<summary><strong>Migrate from Bitcoin Core or Bitcoin Knots (no re-sync, no uninstall required first)</strong></summary>
 
-- **Port `8333` (P2P) & `8332` (RPC):** Bitcoin Roots publishes standard Bitcoin ports `8333` and `8332`. Stop any other Bitcoin app using those ports (such as official **Bitcoin Node / Bitcoin Core**) before starting it.
-- **No conflict with Core Lightning or Bitcoin Knots:** The web UI runs on port `2111` (avoiding Bitcoin Core on `2100`, Core Lightning on `2103`/`2106`/`2107`/`2110`, and Bitcoin Knots on `2105`). Static internal IPs use `10.21.120.8–10`.
-- **Separate data directory & backups:** Bitcoin Roots uses its own `data/` directory and does not migrate an existing node. Back up `data/tor/` along with your app configuration to keep your `.onion` identities.
+Bitcoin Roots uses dedicated host ports (`10333` P2P, `10332` RPC, `2111` Web UI), so it installs cleanly alongside **Bitcoin Core** (`8333`/`8332`/`2100`) and **Bitcoin Knots** (`9333`/`9332`/`2105`). You can move your existing blockchain files and switch your apps before ever uninstalling your old node:
+
+1. **Install Bitcoin Roots** from this store (you do **not** need to uninstall Bitcoin Core or Bitcoin Knots first).
+2. **Stop both nodes** from the Umbrel UI (or via SSH: `umbreld client apps.stop.mutate --appId bitcoin` and `--appId blockdyor-bitcoin-roots`; use `bitcoin-knots` if migrating from Knots).
+3. **Move the blockchain data** via SSH on your Umbrel (same-filesystem `mv` is instant and avoids doubling disk usage; do **not** move `bitcoin.conf` or `settings.json`):
+   ```bash
+   # Set SRC to "bitcoin" (Bitcoin Core) or "bitcoin-knots" (Bitcoin Knots)
+   SRC=bitcoin
+   SRC_DIR="$HOME/umbrel/app-data/$SRC/data/bitcoin"
+   DST_DIR="$HOME/umbrel/app-data/blockdyor-bitcoin-roots/data/bitcoin"
+
+   # Remove any empty initial folders created on first boot of Bitcoin Roots
+   rm -rf "$DST_DIR/blocks" "$DST_DIR/chainstate" "$DST_DIR/indexes"
+
+   # Move blocks (including blocks/xor.dat), chainstate, and indexes
+   mv "$SRC_DIR/blocks" "$SRC_DIR/chainstate" "$DST_DIR/"
+   [ -d "$SRC_DIR/indexes" ] && mv "$SRC_DIR/indexes" "$DST_DIR/"
+   ```
+   *(If you moved your node data to external storage in umbrelOS, replace `$HOME/umbrel/app-data/<app>/data` with that app's external data root.)*
+4. **Start Bitcoin Roots** and wait for it to show **Synchronized 100%** on port `2111`.
+5. **Switch dependent apps** (**Core Lightning**, **Bassin**, **LND**, **Electrs**, etc.) in Umbrel **App Settings &rarr; Dependencies** to **Bitcoin Roots** and verify they connect cleanly.
+6. **Uninstall the old node** (`bitcoin` or `bitcoin-knots`) once you have verified everything works.
+7. **Backups:** Back up `data/tor/` along with your app configuration to preserve your `.onion` P2P and RPC identities.
 
 </details>
 
@@ -154,7 +174,7 @@ https://github.com/blockdyor/blockdyor-umbrel-community-app-store
 | App | App ID | Web UI | Published Host Ports | Internal Static IPs |
 | --- | --- | :-: | --- | --- |
 | **Bassin** | `blockdyor-bassin` | `5009` | `3456` (Stratum V1), `3457` (Stratum V2), `3458` (SV2 JD) | Dynamic (`app_proxy`) |
-| **Bitcoin Roots** | `blockdyor-bitcoin-roots` | `2111` | `8333` (P2P), `8332` (RPC) | `10.21.120.8` (node), `.9` (Tor), `.10` (I2P) |
+| **Bitcoin Roots** | `blockdyor-bitcoin-roots` | `2111` | `10333` (P2P), `10332` (RPC) | `10.21.120.8` (node), `.9` (Tor), `.10` (I2P) |
 
 ---
 
@@ -163,8 +183,8 @@ https://github.com/blockdyor/blockdyor-umbrel-community-app-store
 **Can I connect Core Lightning or Bassin directly to Bitcoin Roots?**
 Yes. `blockdyor-bitcoin-roots` declares `implements: [bitcoin]` and exports the full `APP_BITCOIN_*` contract (including ZMQ and IPC). Pick **Bitcoin Roots** as the Bitcoin node dependency when installing or configuring Core Lightning, Bassin, LND, or Electrs.
 
-**Can Bitcoin Roots run at the same time as Bitcoin Core?**
-Not simultaneously while both bind host ports `8333`/`8332`. Stop Bitcoin Core first before starting Bitcoin Roots. It runs cleanly alongside Bitcoin Knots (`2105` / `9333` / `9332`) and Core Lightning (`2103` / `2106` / `2107` / `2110`).
+**Can Bitcoin Roots run alongside Bitcoin Core and Bitcoin Knots?**
+Yes. Bitcoin Roots uses dedicated host ports (`2111` Web UI, `10333` P2P, `10332` RPC) and internal IPs (`10.21.120.8–10`), so it does not conflict with Bitcoin Core (`2100` / `8333` / `8332`), Bitcoin Knots (`2105` / `9333` / `9332`), or Core Lightning (`2103` / `2106` / `2107` / `2110`). This lets you install Bitcoin Roots, move your chain data, switch dependent apps, and uninstall your old node only after confirming everything works.
 
 **Are container images verified and multi-architecture?**
 Yes. Both **Bassin** and **Bitcoin Roots** pin every container image by `@sha256` multi-architecture manifest digest (`linux/amd64` + `linux/arm64`) built and integration-tested in GitHub Actions.

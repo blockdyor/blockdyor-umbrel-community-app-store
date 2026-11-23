@@ -221,7 +221,7 @@ networks:
 			'bitcoin-cli',
 			'-datadir=/data/bitcoin',
 			'-regtest',
-			'-rpcport=8332',
+			`-rpcport=${rootsEnv.APP_BITCOIN_ROOTS_RPC_PORT}`,
 			...args,
 		).trim()
 
@@ -316,7 +316,7 @@ networks:
 	// Fund CLN from Bitcoin Roots, mine 6 blocks, and verify CLN sees the confirmed on-chain funds
 	const clnAddr = lcli('newaddr').bech32
 	assert.ok(clnAddr.startsWith('bcrt1'), `unexpected CLN address: ${clnAddr}`)
-	bcli('-rpcwallet=miner', 'sendtoaddress', clnAddr, '1.0')
+	bcli('-rpcwallet=miner', '-named', 'sendtoaddress', `address=${clnAddr}`, 'amount=1.0', 'fee_rate=10')
 	bcli('-rpcwallet=miner', 'generatetoaddress', '6', minerAddr)
 
 	await until('Core Lightning confirms 1 BTC deposit at height 107', () => {
@@ -376,7 +376,32 @@ networks:
 	assert.equal(i2pState, 'running', `i2p container state was ${i2pState}`)
 	console.log('PASS: Bitcoin Roots I2P sidecar running cleanly')
 
-	console.log('\nALL E2E CHECKS PASSED: Bitcoin Roots + Core Lightning + Bassin')
+	// 6. Verify chain-data migration without re-sync (simulates moving blocks/chainstate/indexes from Core/Knots)
+	console.log('==> Testing zero-re-sync chain data migration (moving blocks, chainstate, indexes)...')
+	compose(rootsProject, rootsFiles, rootsEnv, 'stop', 'app')
+	const migratedDir = path.join(workDir, 'migrated-bitcoin-data')
+	await mkdir(path.join(migratedDir, 'regtest'), {recursive: true})
+	const srcRegtest = path.join(rootsDir, 'data/bitcoin/regtest')
+	await cp(path.join(srcRegtest, 'blocks'), path.join(migratedDir, 'regtest/blocks'), {recursive: true})
+	await cp(path.join(srcRegtest, 'chainstate'), path.join(migratedDir, 'regtest/chainstate'), {recursive: true})
+	await cp(path.join(srcRegtest, 'indexes'), path.join(migratedDir, 'regtest/indexes'), {recursive: true})
+	// Wipe old bitcoin datadir completely (simulating fresh Bitcoin Roots install) and move only blocks/chainstate/indexes in
+	await rm(path.join(rootsDir, 'data/bitcoin'), {recursive: true, force: true})
+	await mkdir(path.join(rootsDir, 'data/bitcoin/regtest'), {recursive: true})
+	await cp(path.join(migratedDir, 'regtest/blocks'), path.join(srcRegtest, 'blocks'), {recursive: true})
+	await cp(path.join(migratedDir, 'regtest/chainstate'), path.join(srcRegtest, 'chainstate'), {recursive: true})
+	await cp(path.join(migratedDir, 'regtest/indexes'), path.join(srcRegtest, 'indexes'), {recursive: true})
+	run('chmod', ['-R', 'a+rwx', path.join(rootsDir, 'data/bitcoin')])
+
+	compose(rootsProject, rootsFiles, rootsEnv, 'up', '-d', 'app')
+	await until('Migrated Bitcoin Roots boots immediately at height 107 without re-sync', () => {
+		const info = JSON.parse(bcli('getblockchaininfo'))
+		assert.equal(info.blocks, 107)
+		return info
+	})
+	console.log('PASS: Migrated Bitcoin Roots resumed at height 107 with zero re-sync')
+
+	console.log('\nALL E2E CHECKS PASSED: Bitcoin Roots (10333/10332) + Core Lightning + Bassin + Chain Migration')
 } catch (error) {
 	for (const {project, files, env} of composeCalls) {
 		try {

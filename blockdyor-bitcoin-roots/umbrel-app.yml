@@ -6,7 +6,7 @@ storage:
   dataRoot: data
 category: bitcoin
 name: Bitcoin Roots
-version: "1.4.0-roots.1-blockdyor.2"
+version: "1.4.0-roots.1-blockdyor.3"
 tagline: Run your personal Bitcoin Roots node
 icon: https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bitcoin-roots/icon.png
 description: >-
@@ -22,10 +22,11 @@ description: >-
   Bitcoin node provider.
 
 
-  This app publishes P2P port 8333 and RPC port 8332, so stop any other Bitcoin
-  node app using those ports (such as Bitcoin Node / Bitcoin Core) before
-  installing or starting it. It uses its own data directory and does not migrate
-  an existing node.
+  Uses dedicated host ports (P2P 10333, RPC 10332, Web UI 2111) so you can
+  install Bitcoin Roots alongside Bitcoin Core (8333/8332) or Bitcoin Knots
+  (9333/9332), move your existing blocks/chainstate/indexes without re-syncing,
+  switch dependent apps, and uninstall your previous node only after verifying
+  everything works.
 developer: Plan-B Foundation
 website: https://plan-b.foundation/bitcoin-roots
 dependencies: []
@@ -38,12 +39,12 @@ gallery: []
 path: ""
 defaultPassword: ""
 releaseNotes: >-
-  Applies the official Bitcoin Roots logo and Plan-B Roots dark color scheme,
-  updates app branding to Bitcoin Roots, and fixes header version detection so
-  Bitcoin Roots 30.3-roots.1 displays properly instead of "unknown". Keeps the
-  Relay & Mining Policy settings tab and native Umbrel Bitcoin provider support
-  (implements: bitcoin) for Core Lightning, Bassin, LND, and Electrs on web UI
-  port 2111.
+  Moves host P2P/RPC ports to 10333/10332 (matching Bitcoin Knots' 9333/9332
+  side-by-side pattern) so Bitcoin Roots installs cleanly alongside Bitcoin Core
+  and Bitcoin Knots without port conflicts, enabling zero-re-sync chain data
+  migration before uninstalling your old node. Keeps the Plan-B dark UI, Relay
+  & Mining Policy tab, and full implements: bitcoin support for Core Lightning,
+  Bassin, LND, and Electrs.
 widgets:
   - id: "stats"
     type: "four-stats"

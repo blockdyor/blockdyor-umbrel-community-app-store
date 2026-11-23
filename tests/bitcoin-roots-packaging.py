@@ -119,8 +119,9 @@ done
                 self.assertEqual(self_env["APP_BITCOIN_TOR_PROXY_IP"], "10.21.120.9")
                 self.assertEqual(self_env["APP_BITCOIN_I2P_DAEMON_IP"], "10.21.120.10")
                 self.assertEqual(self_env["APP_BITCOIN_DATA_DIR"], str(data_root / "bitcoin"))
-                self.assertEqual(self_env["APP_BITCOIN_RPC_PORT"], "8332")
-                self.assertEqual(self_env["APP_BITCOIN_P2P_PORT"], "8333")
+                self.assertEqual(self_env["APP_BITCOIN_RPC_PORT"], "10332")
+                self.assertEqual(self_env["APP_BITCOIN_P2P_PORT"], "10333")
+                self.assertEqual(self_env["APP_BITCOIN_P2P_WHITEBIND_PORT"], "10335")
                 self.assertEqual(self_env["APP_BITCOIN_ZMQ_HASHBLOCK_PORT"], "28334")
                 self.assertEqual(self_env["APP_BITCOIN_NETWORK"], "mainnet")
                 self.assertEqual(self_env["APP_BITCOIN_NETWORK_ELECTRS"], "bitcoin")
@@ -180,6 +181,7 @@ done
                     PATH=f"{tmp}:{os.environ['PATH']}",
                     TOR_CONTROL_PASSWORD="deadbeef1234",
                     BITCOIND_IP="10.21.120.8",
+                    RPC_PORT="10332",
                 )
                 res = subprocess.run(
                     ["bash", str(entry)],
@@ -192,7 +194,7 @@ done
                 torrc = (root / "roots-torrc").read_text()
                 self.assertIn("HashedControlPassword 16:ABCDEF1234567890", torrc)
                 self.assertIn("HiddenServicePort 8333 10.21.120.8:8334", torrc)
-                self.assertIn("HiddenServicePort 8332 10.21.120.8:8332", torrc)
+                self.assertIn("HiddenServicePort 8332 10.21.120.8:10332", torrc)
                 self.assertEqual((root / "data/tor").stat().st_mode & 0o777, 0o700)
 
     def test_compose_contract(self):

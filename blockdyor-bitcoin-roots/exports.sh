@@ -12,10 +12,11 @@ export APP_BITCOIN_ROOTS_I2P_DAEMON_IP="${APP_BITCOIN_ROOTS_I2P_IP}"
 _roots_data_root="${EXPORTS_APP_DATA_DIR:-${EXPORTS_APP_DIR:-}/data}"
 export APP_BITCOIN_ROOTS_DATA_DIR="${_roots_data_root}/bitcoin"
 
-# PORTS
-export APP_BITCOIN_ROOTS_RPC_PORT="8332"
-export APP_BITCOIN_ROOTS_P2P_PORT="8333"
-export APP_BITCOIN_ROOTS_P2P_WHITEBIND_PORT="8335"
+# PORTS (non-conflicting with Bitcoin Core 8332/8333 and Bitcoin Knots 9332/9333
+# so users can install side-by-side and migrate chain data before uninstalling)
+export APP_BITCOIN_ROOTS_RPC_PORT="10332"
+export APP_BITCOIN_ROOTS_P2P_PORT="10333"
+export APP_BITCOIN_ROOTS_P2P_WHITEBIND_PORT="10335"
 export APP_BITCOIN_ROOTS_TOR_PORT="8334"
 export APP_BITCOIN_ROOTS_ZMQ_RAWBLOCK_PORT="28332"
 export APP_BITCOIN_ROOTS_ZMQ_RAWTX_PORT="28333"
