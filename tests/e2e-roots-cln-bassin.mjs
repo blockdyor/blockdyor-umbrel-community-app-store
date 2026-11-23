@@ -344,29 +344,28 @@ networks:
 	})
 	assert.equal(bassinEnv.APP_BITCOIN_RPC_PASS, rootsEnv.APP_BITCOIN_RPC_PASS, 'Bassin must derive identical RPC pass')
 
-	const bassinFiles = [path.join(bassinDir, 'docker-compose.yml'), netOverride]
+	const bassinOverride = path.join(workDir, 'bassin-override.yml')
+	await writeFile(
+		bassinOverride,
+		`services:
+  ui:
+    ports:
+      - '127.0.0.1:18080:8080'
+`,
+	)
+	const bassinFiles = [path.join(bassinDir, 'docker-compose.yml'), netOverride, bassinOverride]
 	composeCalls.push({project: bassinProject, files: bassinFiles, env: bassinEnv})
 	console.log('==> Starting blockdyor-bassin (init + ckpool + ui) wired to Bitcoin Roots...')
 	compose(bassinProject, bassinFiles, bassinEnv, 'up', '-d', 'ckpool', 'ui')
 
-	await until('Bassin CKPool connected to Bitcoin Roots & UI healthy', () => {
+	await until('Bassin CKPool connected to Bitcoin Roots & UI healthy', async () => {
 		const logs = compose(bassinProject, bassinFiles, bassinEnv, 'logs', '--no-color', 'ckpool')
 		assert.ok(
-			/bitcoind|IPC|Connected|New block|Stratum/i.test(logs) && !/Failed to connect|auth failed|401/i.test(logs),
+			/ckpool stratifier ready/i.test(logs) && !/Failed to connect|auth failed|401/i.test(logs),
 			`unexpected ckpool logs:\n${logs}`,
 		)
-		const status = compose(
-			bassinProject,
-			bassinFiles,
-			bassinEnv,
-			'exec',
-			'-T',
-			'ui',
-			'node',
-			'-e',
-			`fetch('http://127.0.0.1:8080/').then(r=>console.log(r.status))`,
-		).trim()
-		assert.equal(status, '200')
+		const res = await fetch('http://127.0.0.1:18080/')
+		assert.equal(res.status, 200)
 	})
 	const ckLogs = compose(bassinProject, bassinFiles, bassinEnv, 'logs', '--no-color', '--tail', '30', 'ckpool')
 	console.log('PASS: Bassin CKPool + UI connected to Bitcoin Roots:\n' + ckLogs)
