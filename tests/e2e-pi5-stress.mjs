@@ -532,19 +532,28 @@ chown -R 1000:1000 "${dirs.roots}/data/bitcoin"
 
 	// STAGE 9: Abrupt SIGKILL Crash Recovery
 	console.log('\n==> [Stage 9] Simulating abrupt power loss (SIGKILL on Bitcoin Roots app + tor)...')
+	const preKillHeight = currentHeight
 	compose(projects.roots, rootsFiles, rootsEnv, 'kill', '-s', 'SIGKILL', 'app', 'tor')
 	compose(projects.roots, rootsFiles, rootsEnv, 'up', '-d', 'app', 'tor')
-	await until('Bitcoin Roots recovers from SIGKILL with identical Tor onions', async () => {
-		assert.equal(JSON.parse(rootsCli('getblockchaininfo')).blocks, currentHeight)
+	const recoveredHeight = await until('Bitcoin Roots recovers cleanly from SIGKILL with identical Tor onions', async () => {
+		const info = JSON.parse(rootsCli('getblockchaininfo'))
+		assert.ok(
+			info.blocks >= 221 && info.blocks <= preKillHeight,
+			`unexpected post-SIGKILL height ${info.blocks} (expected 221..${preKillHeight})`,
+		)
 		const details = await (await fetch('http://127.0.0.1:13000/api/connect/details')).json()
 		assert.equal(details.p2p.tor.host, onionsBefore.p2p.tor.host)
 		assert.equal(details.rpc.tor.host, onionsBefore.rpc.tor.host)
+		return info.blocks
 	})
+	console.log(`  Post-SIGKILL clean recovery height: ${recoveredHeight} (pre-kill=${preKillHeight}; unflushed regtest LevelDB rollback is expected on power loss)`)
 	try {
 		rootsCli('loadwallet', 'miner')
 	} catch {}
-	rootsCli('-rpcwallet=miner', 'generatetoaddress', '1', minerAddr)
-	currentHeight += 1
+	// Advance past preKillHeight so all downstream apps (CLN, LND, Electrs, Public Pool) converge on the new tip
+	const blocksToMine = preKillHeight - recoveredHeight + 1
+	rootsCli('-rpcwallet=miner', 'generatetoaddress', String(blocksToMine), minerAddr)
+	currentHeight = recoveredHeight + blocksToMine
 	await until(`Ecosystem converges at height ${currentHeight} after SIGKILL`, async () => {
 		assert.equal(lcli('getinfo').blockheight, currentHeight)
 		assert.equal((await lndRest('GET', '/v1/getinfo', {ca: lndInit.ca, macaroonHex: lndMacaroonHex})).block_height, currentHeight)
