@@ -238,9 +238,11 @@ If you want to accept **incoming clearnet peers** (and previously forwarded port
 
 ![Bitcoin Roots Peer Settings](blockdyor-bitcoin-roots/gallery_3.png)
 
-2. Update your router's NAT / port-forwarding rule to translate external TCP **`8333`** to internal TCP **`10333`** on your Umbrel's LAN IP:
+2. Add or update your router's NAT / port-forwarding rule to forward external TCP **`10333`** to internal TCP **`10333`** on your Umbrel's LAN IP. Because Bitcoin Roots configures `port=10333` in `umbrel-bitcoin.conf`, `bitcoind` advertises `<your-public-ip>:10333` over Bitcoin P2P gossip (the same way Bitcoin Knots uses `9333` to `9333`).
+   - *(Optional)* Once Bitcoin Core is stopped or uninstalled, you can also add a second rule forwarding external TCP **`8333`** to internal TCP **`10333`** for peers that probe the default Bitcoin port.
+   - **Never** forward RPC port `10332` to the public internet.
 
-![Router Port Forwarding External 8333 to Internal 10333](docs/migration-router-ports.png)
+![Router Port Forwarding External 10333 to Internal 10333](docs/migration-router-ports.png)
 
 ---
 
