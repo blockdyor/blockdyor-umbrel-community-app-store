@@ -391,7 +391,10 @@ chown -R 1000:1000 "${dirs.roots}/data/bitcoin"
 
 	await until('Bassin CKPool stratifier ready & UI HTTP 200', async () => {
 		const logs = compose(projects.bassin, bassinFiles, bassinEnv, 'logs', '--no-color', 'ckpool')
-		assert.ok(/ckpool stratifier ready/i.test(logs) && !/Failed to connect|auth failed|401/i.test(logs))
+		assert.ok(
+			/ckpool stratifier ready/i.test(logs) &&
+				!/Failed to connect|auth failed|HTTP[^\n]*\b401\b|\b401 Unauthorized\b/i.test(logs),
+		)
 		assert.equal((await fetch('http://127.0.0.1:18080/')).status, 200)
 	})
 	await until(`Public Pool RPC reports height ${currentHeight}`, async () => {

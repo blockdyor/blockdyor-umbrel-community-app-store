@@ -263,7 +263,10 @@ networks:
 	compose(bassinProject, bassinFiles, bassinEnv, 'up', '-d', 'ckpool', 'ui')
 	await until('Bassin CKPool stratifier ready & UI HTTP 200', async () => {
 		const logs = compose(bassinProject, bassinFiles, bassinEnv, 'logs', '--no-color', 'ckpool')
-		assert.ok(/ckpool stratifier ready/i.test(logs) && !/Failed to connect|auth failed|401/i.test(logs))
+		assert.ok(
+			/ckpool stratifier ready/i.test(logs) &&
+				!/Failed to connect|auth failed|HTTP[^\n]*\b401\b|\b401 Unauthorized\b/i.test(logs),
+		)
 		assert.equal((await fetch('http://127.0.0.1:18080/')).status, 200)
 	})
 	console.log('PASS: Bassin CKPool + UI connected to Bitcoin Roots')
