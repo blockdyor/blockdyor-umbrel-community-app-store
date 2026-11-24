@@ -6,7 +6,7 @@ storage:
   dataRoot: data
 category: bitcoin
 name: Bitcoin Roots
-version: "32.1.0-roots.2-blockdyor.3"
+version: "32.1.0-roots.2-blockdyor.4"
 tagline: Run your personal Bitcoin Roots node
 icon: https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bitcoin-roots/icon.png
 description: >-
@@ -46,13 +46,13 @@ gallery:
 path: ""
 defaultPassword: ""
 releaseNotes: >-
-  Switches Bitcoin Roots back to standard Bitcoin P2P port 8333 and RPC port
-  8332 (matching upstream umbrel-bitcoin-roots) for full DNS-seed clearnet peer
-  discovery and standard 8333 router forwarding. If upgrading from an earlier
-  blockdyor-bitcoin-roots release, update your router forward to 8333 -> 8333
-  and restart connected apps so they pick up RPC port 8332. Includes all
-  v32.1-roots.2 security fixes (CVE-2026-117348), UI polish, ~350+ MB idle RAM
-  reduction, and implements: bitcoin.
+  Dark-theme contrast & polish release on standard Bitcoin ports 8333/8332:
+  enables dark-mode tokens app-wide, fixes unreadable Cancel buttons in Save
+  and Restore Defaults dialogs, styles primary actions in Bitcoin Roots orange,
+  fixes light-mode toast and dropdown hover contrast, and aligns Connect modal
+  and input surfaces to the warm dark card theme. Retains v32.1-roots.2
+  security fixes (CVE-2026-117348), ~350+ MB idle RAM reduction, standard
+  8333/8332 ports, and implements: bitcoin.
 widgets:
   - id: "stats"
     type: "four-stats"
