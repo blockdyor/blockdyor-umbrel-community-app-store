@@ -338,7 +338,7 @@ chown -R 1000:1000 "${dirs.roots}/data/bitcoin"
 	const invList = await lndRest('GET', '/v1/invoices', {ca: lndInit.ca, macaroonHex: lndMacaroonHex})
 	assert.ok(invList.invoices.some((inv) => inv.memo === 'pi5-stress-test-payment' && inv.settled === true))
 
-	lcli('close', fundResp.channel_id)
+	lcli('close', '-k', `id=${fundResp.channel_id}`, 'feerange=["253perkw","100000perkw"]')
 	rootsCli('-rpcwallet=miner', 'generatetoaddress', '6', minerAddr)
 	currentHeight += 6
 	await until('Cooperative close confirmed on LND', async () => {
