@@ -141,6 +141,8 @@ https://github.com/blockdyor/blockdyor-umbrel-community-app-store
 <details>
 <summary><strong>Migrate from Bitcoin Core or Bitcoin Knots (no re-sync, no uninstall required first)</strong></summary>
 
+> See the full illustrated step-by-step guide with screenshots and router port forwarding in **[MIGRATION.md](MIGRATION.md)**.
+
 Bitcoin Roots uses dedicated host ports (`10333` P2P, `10332` RPC, `2111` Web UI), so it installs cleanly alongside **Bitcoin Core** (`8333`/`8332`/`2100`) and **Bitcoin Knots** (`9333`/`9332`/`2105`). You can move your existing blockchain files and switch your apps before ever uninstalling your old node:
 
 1. **Install Bitcoin Roots** from this store (you do **not** need to uninstall Bitcoin Core or Bitcoin Knots first).
