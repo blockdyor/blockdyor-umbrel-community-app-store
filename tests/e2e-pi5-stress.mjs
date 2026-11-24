@@ -253,10 +253,26 @@ chown -R 1000:1000 "${dirs.roots}/data/bitcoin"
 	compose(projects.cln, clnFiles, clnEnv, 'up', '-d', 'lightningd')
 	compose(projects.lnd, lndFiles, lndEnv, 'up', '-d', 'lnd')
 
-	const lcli = (...args) =>
-		JSON.parse(
-			compose(projects.cln, clnFiles, clnEnv, 'exec', '-T', 'lightningd', 'lightning-cli', '--lightning-dir=/root/.lightning', '--network=regtest', ...args),
+	const lcli = (...args) => {
+		const raw = compose(
+			projects.cln,
+			clnFiles,
+			clnEnv,
+			'exec',
+			'-T',
+			'lightningd',
+			'lightning-cli',
+			'--lightning-dir=/root/.lightning',
+			'--network=regtest',
+			...args,
 		)
+		const jsonText = raw
+			.split('\n')
+			.filter((line) => !line.startsWith('#'))
+			.join('\n')
+			.trim()
+		return JSON.parse(jsonText)
+	}
 
 	const lndInit = await until('LND REST API ready', async () => {
 		const ca = await readFile(path.join(dirs.lnd, 'data/lnd/tls.cert'))
@@ -479,9 +495,13 @@ chown -R 1000:1000 "${dirs.roots}/data/bitcoin"
 	}
 	assert.ok(opReturnRejected, 'OP_RETURN transaction was NOT rejected despite datacarrier=0!')
 
-	// CVE-2026-117348 check: send 50,000 duplicate MSG_WTX inv entries and assert zero RPC stall
+	// CVE-2026-117348 check: verify patched >= 32.1 (320100) and survive 50,000 duplicate MSG_WTX inv burst
 	const netInfo = JSON.parse(rootsCli('getnetworkinfo'))
 	console.log('Bitcoin Roots version:', netInfo.version, netInfo.subversion)
+	assert.ok(
+		netInfo.version >= 320100,
+		`Bitcoin Roots ${netInfo.version} (${netInfo.subversion}) is vulnerable to CVE-2026-117348 (need >= 320100)`,
+	)
 	const probeStart = Date.now()
 	await sendDuplicateWtxInvBurst(Number(rootsEnv.APP_BITCOIN_ROOTS_P2P_PORT), 50_000)
 	const rpcStart = Date.now()

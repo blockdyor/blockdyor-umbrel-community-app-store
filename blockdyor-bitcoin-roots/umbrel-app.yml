@@ -6,11 +6,11 @@ storage:
   dataRoot: data
 category: bitcoin
 name: Bitcoin Roots
-version: "1.4.0-roots.1-blockdyor.4"
+version: "32.1.0-roots.2-blockdyor.1"
 tagline: Run your personal Bitcoin Roots node
 icon: https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bitcoin-roots/icon.png
 description: >-
-  Validate Bitcoin with Bitcoin Roots (v30.3-roots.1), a Bitcoin Core-based node
+  Validate Bitcoin with Bitcoin Roots (v32.1-roots.2), a Bitcoin Core-based node
   with selected policy and operator controls from Bitcoin Knots, paired with a
   browser interface for node settings, synchronization, and peer connections.
   Includes persistent Tor and I2P connectivity; onion connection addresses appear
@@ -45,12 +45,13 @@ gallery:
 path: ""
 defaultPassword: ""
 releaseNotes: >-
-  Reduces idle RAM usage by ~350+ MB (replaces eager cities.json and geoip-lite
-  memory tables with zero-RAM on-disk GeoIP binary search, makes ZMQ hashtx and
-  full block fetches demand-driven, caps V8 heap at 192 MB, and runs i2pd with
-  --notransit) and resolves all SonarCloud bugs and security findings. Keeps
-  non-colliding 10333/10332/2111 ports, Plan-B dark UI, Relay & Mining Policy
-  tab, and full implements: bitcoin support.
+  Security release upgrading bundled Bitcoin Roots to v32.1-roots.2 (based on
+  Bitcoin Core 32.1), fixing CVE-2026-117348 (node stall via duplicate orphan
+  inv announcements), adding BIP322 signmessage/verifymessage support, and
+  fixing BDB wallet migration from Bitcoin Knots. Includes ~350+ MB idle RAM
+  reduction, graceful version migration from v30.3-roots.1, non-colliding
+  10333/10332/2111 ports, Plan-B dark UI, Relay & Mining Policy tab, and full
+  implements: bitcoin support.
 widgets:
   - id: "stats"
     type: "four-stats"
