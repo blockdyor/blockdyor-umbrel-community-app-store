@@ -57,7 +57,7 @@ https://github.com/blockdyor/blockdyor-umbrel-community-app-store
 | | App | Version | Category | Web UI | Highlights |
 | :-: | --- | --- | --- | :-: | --- |
 | <a href="#bassin"><img src="blockdyor-bassin/icon.svg" width="44" height="44" alt="Bassin"></a> | [**Bassin**](#bassin)<br><sub>`blockdyor-bassin`</sub> | `2.1.18` | Bitcoin | `5009` | 0%-fee solo Bitcoin mining pool (CKPool) with Stratum V1 (`3456`), opt-in Noise-encrypted Stratum V2 (`3457`), IPC mining, live Settings, and dashboard widgets. |
-| <a href="#bitcoin-roots"><img src="blockdyor-bitcoin-roots/icon.svg" width="44" height="44" alt="Bitcoin Roots"></a> | [**Bitcoin Roots**](#bitcoin-roots)<br><sub>`blockdyor-bitcoin-roots`</sub> | `32.1.0-roots.2-blockdyor.1` | Bitcoin | `2111` | Bitcoin Roots (`v32.1-roots.2`) full node with Relay &amp; Mining Policy UI, persistent Tor &amp; I2P, Plan-B dark UI, side-by-side ports (`10333`/`10332`), and `implements: bitcoin` for CLN / Bassin / LND / Electrs. |
+| <a href="#bitcoin-roots"><img src="blockdyor-bitcoin-roots/icon.svg" width="44" height="44" alt="Bitcoin Roots"></a> | [**Bitcoin Roots**](#bitcoin-roots)<br><sub>`blockdyor-bitcoin-roots`</sub> | `32.1.0-roots.2-blockdyor.3` | Bitcoin | `2111` | Bitcoin Roots (`v32.1-roots.2`) full node with Relay &amp; Mining Policy UI, persistent Tor &amp; I2P, Plan-B dark UI, standard Bitcoin ports (`8333`/`8332`), and `implements: bitcoin` for CLN / Bassin / LND / Electrs. |
 
 ---
 
@@ -117,7 +117,7 @@ https://github.com/blockdyor/blockdyor-umbrel-community-app-store
       <img src="blockdyor-bitcoin-roots/icon.svg" width="76" height="76" alt="Bitcoin Roots">
     </td>
     <td>
-      <strong>Personal Bitcoin Roots Node</strong> &middot; <code>blockdyor-bitcoin-roots</code> &middot; <code>v32.1.0-roots.2-blockdyor.1</code><br>
+      <strong>Personal Bitcoin Roots Node</strong> &middot; <code>blockdyor-bitcoin-roots</code> &middot; <code>v32.1.0-roots.2-blockdyor.3</code><br>
       Full node powered by <a href="https://plan-b.foundation/bitcoin-roots">Bitcoin Roots</a> (<code>v32.1-roots.2</code>) with a Plan-B dark interface, dedicated <strong>Relay &amp; Mining Policy</strong> settings tab, persistent Tor &amp; I2P services, dashboard widgets, and native Umbrel Bitcoin provider support.<br>
       <sub>
         <a href="blockdyor-bitcoin-roots/umbrel-app.yml">Manifest</a> &middot;
@@ -143,9 +143,9 @@ https://github.com/blockdyor/blockdyor-umbrel-community-app-store
 
 > See the full illustrated step-by-step guide with screenshots and router port forwarding in **[MIGRATION.md](MIGRATION.md)**.
 
-Bitcoin Roots uses dedicated host ports (`10333` P2P, `10332` RPC, `2111` Web UI), so it installs cleanly alongside **Bitcoin Core** (`8333`/`8332`/`2100`) and **Bitcoin Knots** (`9333`/`9332`/`2105`). You can move your existing blockchain files and switch your apps before ever uninstalling your old node:
+Bitcoin Roots uses standard Bitcoin ports (`8333` P2P, `8332` RPC) for full DNS-seed peer discovery and a dedicated Web UI port (`2111`). If migrating from **Bitcoin Core** (`8333`/`8332`), stop Bitcoin Core before installing Bitcoin Roots (you do **not** need to uninstall it). **Bitcoin Knots** uses `9333`/`9332` and does not collide. You can move your existing blockchain files and switch your apps before ever uninstalling your old node:
 
-1. **Install Bitcoin Roots** from this store (you do **not** need to uninstall Bitcoin Core or Bitcoin Knots first).
+1. **Stop Bitcoin Core first** if you are migrating from `bitcoin` (skip this before install if migrating from Bitcoin Knots), then **install Bitcoin Roots** from this store.
 2. **Stop both nodes** from the Umbrel UI (or via SSH: `umbreld client apps.stop.mutate --appId bitcoin` and `--appId blockdyor-bitcoin-roots`; use `bitcoin-knots` if migrating from Knots).
 3. **Move the blockchain data** via SSH on your Umbrel (same-filesystem `mv` is instant and avoids doubling disk usage; do **not** move `bitcoin.conf` or `settings.json`):
    ```bash
@@ -176,7 +176,7 @@ Bitcoin Roots uses dedicated host ports (`10333` P2P, `10332` RPC, `2111` Web UI
 | App | App ID | Web UI | Published Host Ports | Internal Static IPs |
 | --- | --- | :-: | --- | --- |
 | **Bassin** | `blockdyor-bassin` | `5009` | `3456` (Stratum V1), `3457` (Stratum V2), `3458` (SV2 JD) | Dynamic (`app_proxy`) |
-| **Bitcoin Roots** | `blockdyor-bitcoin-roots` | `2111` | `10333` (P2P), `10332` (RPC) | `10.21.120.8` (node), `.9` (Tor), `.10` (I2P) |
+| **Bitcoin Roots** | `blockdyor-bitcoin-roots` | `2111` | `8333` (P2P), `8332` (RPC) | `10.21.120.8` (node), `.9` (Tor), `.10` (I2P) |
 
 ---
 
@@ -186,7 +186,7 @@ Bitcoin Roots uses dedicated host ports (`10333` P2P, `10332` RPC, `2111` Web UI
 Yes. `blockdyor-bitcoin-roots` declares `implements: [bitcoin]` and exports the full `APP_BITCOIN_*` contract (including ZMQ and IPC). Pick **Bitcoin Roots** as the Bitcoin node dependency when installing or configuring Core Lightning, Bassin, LND, or Electrs.
 
 **Can Bitcoin Roots run alongside Bitcoin Core and Bitcoin Knots?**
-Yes. Bitcoin Roots uses dedicated host ports (`2111` Web UI, `10333` P2P, `10332` RPC) and internal IPs (`10.21.120.8–10`), so it does not conflict with Bitcoin Core (`2100` / `8333` / `8332`), Bitcoin Knots (`2105` / `9333` / `9332`), or Core Lightning (`2103` / `2106` / `2107` / `2110`). This lets you install Bitcoin Roots, move your chain data, switch dependent apps, and uninstall your old node only after confirming everything works.
+Bitcoin Roots uses standard Bitcoin host ports (`8333` P2P, `8332` RPC) with its own Web UI port (`2111`) and internal IPs (`10.21.120.8–10`). It runs side-by-side with **Bitcoin Knots** (`9333`/`9332`) with zero conflicts. With **Bitcoin Core** (`8333`/`8332`), both can stay installed on the same Umbrel, but only one can run at a time — stop Bitcoin Core before installing or starting Bitcoin Roots, move your chain data, switch dependent apps, and uninstall Bitcoin Core only after confirming everything works.
 
 **Are container images verified and multi-architecture?**
 Yes. Both **Bassin** and **Bitcoin Roots** pin every container image by `@sha256` multi-architecture manifest digest (`linux/amd64` + `linux/arm64`) built and integration-tested in GitHub Actions.

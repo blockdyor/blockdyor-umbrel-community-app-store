@@ -4,7 +4,7 @@ This guide walks you through migrating an existing **umbrelOS** node from **Bitc
 
 > [!IMPORTANT]
 > **Why you don't need to uninstall Bitcoin Core or Bitcoin Knots first:**
-> `blockdyor-bitcoin-roots` uses dedicated non-colliding host ports and static IPs (`UI :2111`, `P2P :10333`, `RPC :10332`, `Whitebind :10335`, `10.21.120.8-10`) so it installs cleanly side-by-side alongside Bitcoin Core (`8333`/`8332`) and Bitcoin Knots (`9333`/`9332`). Uninstall your old node **only in Step 6** after verifying everything is synced and connected.
+> `blockdyor-bitcoin-roots` uses standard Bitcoin ports (`P2P :8333`, `RPC :8332`, `Whitebind :8335`) for full DNS-seed clearnet peer discovery, with its own Web UI port (`2111`) and static IPs (`10.21.120.8-10`). If migrating from **Bitcoin Core** (`8333`/`8332`), stop Bitcoin Core **before** installing Bitcoin Roots so ports `8333`/`8332` are free (Bitcoin Knots uses `9333`/`9332` and does not collide). Uninstall your old node **only in Step 6** after verifying everything is synced and connected.
 
 ---
 
@@ -14,7 +14,7 @@ This guide walks you through migrating an existing **umbrelOS** node from **Bitc
 | --- | --- | --- | --- | --- | --- | --- |
 | Bitcoin Core | `bitcoin` | `2100` | `8333` | `8332` | `8335` | `10.21.21.8` |
 | Bitcoin Knots | `bitcoin-knots` | `2105` | `9333` | `9332` | `9335` | `10.21.22.8` |
-| **Bitcoin Roots** | **`blockdyor-bitcoin-roots`** | **`2111`** | **`10333`** | **`10332`** | **`10335`** | **`10.21.120.8`** |
+| **Bitcoin Roots** | **`blockdyor-bitcoin-roots`** | **`2111`** | **`8333`** | **`8332`** | **`8335`** | **`10.21.120.8`** |
 
 ---
 
@@ -23,13 +23,14 @@ This guide walks you through migrating an existing **umbrelOS** node from **Bitc
 > [!NOTE]
 > On umbrelOS, the default `umbrel` user does not have permission to access the Docker socket directly. Every `docker` command in this guide must be run with `sudo`.
 
-1. Add the **blockdyor Community App Store** (if you haven't already):
+1. If you are migrating from **Bitcoin Core (`bitcoin`)**, stop **Bitcoin Node** first from the umbrelOS dashboard (right-click app → **Stop**) so host ports `8333` and `8332` are free before installing Bitcoin Roots. *(Bitcoin Knots uses `9333`/`9332`, so Knots users can stop Knots in step 4 below.)*
+2. Add the **blockdyor Community App Store** (if you haven't already):
    - Open **App Store → `⋮` (top right) → Community App Stores** and paste:
      ```text
      https://github.com/blockdyor/blockdyor-umbrel-community-app-store
      ```
-2. Install **Bitcoin Roots** (`blockdyor-bitcoin-roots`). Because its ports (`10333`/`10332`/`2111`) never collide with Core or Knots, it installs cleanly alongside your current node.
-3. Wait until installation finishes, then **stop** these apps from the umbrelOS dashboard (right-click app → **Stop**):
+3. Install **Bitcoin Roots** (`blockdyor-bitcoin-roots`).
+4. Wait until installation finishes, then make sure all of these apps are **stopped** from the umbrelOS dashboard (right-click app → **Stop**):
    - **Bitcoin Roots** (`blockdyor-bitcoin-roots`): stop it before it downloads blocks from scratch
    - Your existing node: **Bitcoin Node** (`bitcoin`) or **Bitcoin Knots** (`bitcoin-knots`)
    - Dependent apps: **Core Lightning**, **Lightning Node (LND)**, **Electrs**, **Fulcrum**, **Bassin**, **Public Pool**, **Mempool**
@@ -173,7 +174,7 @@ sudo ls "$DST/blocks" | grep xor
    - **Warning signs:** if you see a reindex request, a corruption message, or block height starting at `0`, stop Bitcoin Roots right away and leave the old node folders untouched.
 3. Verify sync state directly via RPC:
    ```bash
-   sudo docker exec blockdyor-bitcoin-roots_app_1 bitcoin-cli -datadir=/data/bitcoin -rpcport=10332 getblockchaininfo | jq '{chain, blocks, headers, verificationprogress}'
+   sudo docker exec blockdyor-bitcoin-roots_app_1 bitcoin-cli -datadir=/data/bitcoin -rpcport=8332 getblockchaininfo | jq '{chain, blocks, headers, verificationprogress}'
    ```
    - Expected result: `blocks` equals `headers` and `verificationprogress` is close to `1` (e.g. `0.999999`).
    - If `jq` is not installed on your node, drop `| jq ...` and inspect the raw JSON output instead.
@@ -193,7 +194,7 @@ sudo ls "$DST/blocks" | grep xor
 
 ## Step 4: Switch Connected Apps to Bitcoin Roots
 
-Because `blockdyor-bitcoin-roots` declares `implements: [bitcoin]` and exports the full canonical `APP_BITCOIN_*` contract (`10.21.120.8`, RPC `10332`, Whitebind `10335`, ZMQ `28332-28336`, `.cookie`, and IPC socket), modern **umbrelOS (1.4+ / 2.0)** lets you switch every connected app directly in the UI, with **no manual `settings.yml` or `.env` editing required**.
+Because `blockdyor-bitcoin-roots` declares `implements: [bitcoin]` and exports the full canonical `APP_BITCOIN_*` contract (`10.21.120.8`, RPC `8332`, Whitebind `8335`, ZMQ `28332-28336`, `.cookie`, and IPC socket), modern **umbrelOS (1.4+ / 2.0)** lets you switch every connected app directly in the UI, with **no manual `settings.yml` or `.env` editing required**.
 
 ![Switching Dependent Apps to Bitcoin Roots in umbrelOS UI](docs/migration-umbrel-dependencies.png)
 
@@ -207,16 +208,16 @@ For each app:
 
 1. On the umbrelOS dashboard, right-click the app, open its **Settings**, and go to **Connections** (older or newer umbrelOS versions may call this tab **Dependencies**).
 2. Select **Bitcoin Roots** (`blockdyor-bitcoin-roots`) as the Bitcoin node.
-3. Click **Save**. umbrelOS automatically restarts the app wired to Bitcoin Roots (`10.21.120.8:10332`) with the matching derived RPC credentials.
+3. Click **Save**. umbrelOS automatically restarts the app wired to Bitcoin Roots (`10.21.120.8:8332`) with the matching derived RPC credentials.
 4. Check that app's logs (see Step 6) to confirm it connected cleanly before switching the next app.
 
 ### App-Specific Connection Notes
-- **Core Lightning (`core-lightning`)**: once switched under **Connections** (or **Dependencies**), automatically picks up `10.21.120.8:10332` and matching RPC credentials via `exports.sh`.
-- **Lightning Node / LND (`lightning`)**: once switched under **Connections** (or **Dependencies**), automatically picks up RPC (`10332`) and ZMQ (`rawblock :28332`, `rawtx :28333`).
-- **Bassin (`blockdyor-bassin`)**: automatically discovers Bitcoin Roots' Cap'n Proto IPC socket (`/bitcoin/node.sock`) when IPC is enabled, or falls back seamlessly to RPC (`10332`) + ZMQ (`28334`).
-- **Public Pool (`public-pool`)**: automatically connects via RPC (`10332`) and mines block templates using your Bitcoin Roots Relay & Mining Policy rules.
-- **Electrs (`electrs`)**: automatically reads Bitcoin Roots' `.cookie` file and connects to whitebind P2P (`10335`) and RPC (`10332`).
-- **Fulcrum (`fulcrum`)**: if you previously edited a custom `fulcrum.conf` with a hardcoded IP/port, remove those manual overrides or update them to `10.21.120.8:10332`.
+- **Core Lightning (`core-lightning`)**: once switched under **Connections** (or **Dependencies**), automatically picks up `10.21.120.8:8332` and matching RPC credentials via `exports.sh`.
+- **Lightning Node / LND (`lightning`)**: once switched under **Connections** (or **Dependencies**), automatically picks up RPC (`8332`) and ZMQ (`rawblock :28332`, `rawtx :28333`).
+- **Bassin (`blockdyor-bassin`)**: automatically discovers Bitcoin Roots' Cap'n Proto IPC socket (`/bitcoin/node.sock`) when IPC is enabled, or falls back seamlessly to RPC (`8332`) + ZMQ (`28334`).
+- **Public Pool (`public-pool`)**: automatically connects via RPC (`8332`) and mines block templates using your Bitcoin Roots Relay & Mining Policy rules.
+- **Electrs (`electrs`)**: automatically reads Bitcoin Roots' `.cookie` file and connects to whitebind P2P (`8335`) and RPC (`8332`).
+- **Fulcrum (`fulcrum`)**: if you previously edited a custom `fulcrum.conf` with a hardcoded IP/port, remove those manual overrides or update them to `10.21.120.8:8332`.
 - **Mempool (`mempool`)**: switch its Bitcoin node under **Connections** (or **Dependencies**) after your Lightning and Electrum servers are up.
 
 > [!NOTE]
@@ -238,11 +239,12 @@ If you want to accept **incoming clearnet peers** (and previously forwarded port
 
 ![Bitcoin Roots Peer Settings](blockdyor-bitcoin-roots/gallery_3.png)
 
-2. Add or update your router's NAT / port-forwarding rule to forward external TCP **`10333`** to internal TCP **`10333`** on your Umbrel's LAN IP. Because Bitcoin Roots configures `port=10333` in `umbrel-bitcoin.conf`, `bitcoind` advertises `<your-public-ip>:10333` over Bitcoin P2P gossip (the same way Bitcoin Knots uses `9333` to `9333`).
-   - *(Optional)* Once Bitcoin Core is stopped or uninstalled, you can also add a second rule forwarding external TCP **`8333`** to internal TCP **`10333`** for peers that probe the default Bitcoin port.
-   - **Never** forward RPC port `10332` to the public internet.
+2. Add or update your router's NAT / port-forwarding rule to forward external TCP **`8333`** to internal TCP **`8333`** on your Umbrel's LAN IP.
+   - If you migrated from **Bitcoin Core**, your existing `8333` to `8333` rule already works.
+   - If you migrated from **Bitcoin Knots**, change your rule from `9333` to **`8333`** so your node is picked up by Bitcoin DNS seeds for clearnet peer discovery.
+   - **Never** forward RPC port `8332` to the public internet.
 
-![Router Port Forwarding External 10333 to Internal 10333](docs/migration-router-ports.png)
+![Router Port Forwarding External 8333 to Internal 8333](docs/migration-router-ports.png)
 
 ---
 
@@ -252,7 +254,7 @@ Verify that Bitcoin Roots and all connected apps are healthy with zero auth or c
 
 ```bash
 # 1. Confirm Bitcoin Roots v32.1-roots.2 is synced (note container is _app_1, not _bitcoind_1)
-sudo docker exec blockdyor-bitcoin-roots_app_1 bitcoin-cli -datadir=/data/bitcoin -rpcport=10332 getblockchaininfo | jq '{chain, blocks, headers, verificationprogress}'
+sudo docker exec blockdyor-bitcoin-roots_app_1 bitcoin-cli -datadir=/data/bitcoin -rpcport=8332 getblockchaininfo | jq '{chain, blocks, headers, verificationprogress}'
 
 # 2. Check logs of connected apps (run the ones you have installed)
 sudo docker logs blockdyor-bitcoin-roots_app_1 --tail 30

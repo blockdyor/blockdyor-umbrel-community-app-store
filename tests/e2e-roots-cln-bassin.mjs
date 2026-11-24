@@ -125,8 +125,8 @@ networks:
 
 	// 1. Boot blockdyor-bitcoin-roots
 	const rootsEnv = sourceUmbrelEnv({...envArgs, callerApp: 'blockdyor-bitcoin-roots', appDir: rootsDir, exportsChain: [rootsExport]})
-	assert.equal(rootsEnv.APP_BITCOIN_RPC_PORT, '10332')
-	assert.equal(rootsEnv.APP_BITCOIN_P2P_PORT, '10333')
+	assert.equal(rootsEnv.APP_BITCOIN_RPC_PORT, '8332')
+	assert.equal(rootsEnv.APP_BITCOIN_P2P_PORT, '8333')
 	assert.equal(rootsEnv.APP_BITCOIN_NETWORK, 'regtest')
 	assert.equal(rootsEnv.APP_BITCOIN_IPC_ENABLED, 'true')
 

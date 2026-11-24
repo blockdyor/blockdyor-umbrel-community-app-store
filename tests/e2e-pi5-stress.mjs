@@ -1,6 +1,6 @@
 // Real-world Raspberry Pi 5 (ARM64 + x86_64) stress & ecosystem E2E suite for blockdyor-bitcoin-roots:
-// 1. Side-by-side coexistence with official Bitcoin Core (8333/8332 vs 10333/10332)
-// 2. Real zero-re-sync chain migration from Bitcoin Core -> Bitcoin Roots (exact block hash parity)
+// 1. Official Bitcoin Core (8333/8332) generates chainstate, then stops cleanly to free 8333/8332
+// 2. Real zero-re-sync chain migration from Bitcoin Core -> Bitcoin Roots on standard 8333/8332 (exact block hash parity)
 // 3. Official Core Lightning + official LND synced via exports.sh (RPC + ZMQ rawblock/rawtx)
 // 4. Real Lightning channel open, BOLT11 invoice payment, and cooperative close between CLN <-> LND
 // 5. Official Electrs (cookie auth + whitebind P2P + live Electrum JSON-RPC query)
@@ -138,8 +138,8 @@ try {
 		`services:\n  app_proxy:\n    image: busybox:1.37\nnetworks:\n  default:\n    external: true\n    name: ${networkName}\n`,
 	)
 
-	// STAGE 1: Side-by-Side Coexistence (Official Bitcoin Core + Bitcoin Roots)
-	console.log('\n==> [Stage 1] Booting Official Bitcoin Core (8333/8332) AND Bitcoin Roots (10333/10332) simultaneously...')
+	// STAGE 1: Boot Official Bitcoin Core (8333/8332), generate 101 blocks, then stop it to free 8333/8332
+	console.log('\n==> [Stage 1] Booting Official Bitcoin Core (8333/8332) and generating 101 blocks...')
 	const coreEnv = sourceUmbrelEnv({
 		...envArgs,
 		callerApp: 'bitcoin',
@@ -169,7 +169,6 @@ try {
 	)
 
 	compose(projects.core, coreFiles, coreEnv, 'up', '-d', 'app')
-	compose(projects.roots, rootsFiles, rootsEnv, 'up', '-d', 'app', 'tor', 'i2p')
 
 	const coreCli = (...args) =>
 		compose(projects.core, coreFiles, coreEnv, 'exec', '-T', 'app', 'bitcoin-cli', '-datadir=/data/bitcoin', '-regtest', `-rpcport=${coreEnv.APP_BITCOIN_RPC_PORT}`, ...args).trim()
@@ -179,25 +178,15 @@ try {
 	await until('Official Bitcoin Core RPC ready on 8332', () => {
 		assert.equal(JSON.parse(coreCli('getblockchaininfo')).chain, 'regtest')
 	})
-	const rootsVersion = await until('Bitcoin Roots RPC & HTTP API ready on 10332/3000', async () => {
-		assert.equal(JSON.parse(rootsCli('getblockchaininfo')).chain, 'regtest')
-		const res = await fetch('http://127.0.0.1:13000/api/bitcoind/version')
-		assert.equal(res.status, 200)
-		const v = await res.json()
-		assert.equal(v.implementation, 'Bitcoin Roots')
-		return v
-	})
-	console.log('PASS [Stage 1]: Core & Roots (', rootsVersion.version, ') ran side-by-side with zero conflicts')
-
 	coreCli('createwallet', 'coreminer')
 	const coreMinerAddr = coreCli('-rpcwallet=coreminer', 'getnewaddress')
 	coreCli('-rpcwallet=coreminer', 'generatetoaddress', '101', coreMinerAddr)
 	const expectedHash101 = coreCli('getblockhash', '101')
+	console.log('PASS [Stage 1]: Official Bitcoin Core generated 101 blocks on 8333/8332')
 
-	// STAGE 2: Real Zero-Re-Sync Migration (Bitcoin Core -> Bitcoin Roots)
-	console.log('\n==> [Stage 2] Migrating chain data from Bitcoin Core -> Bitcoin Roots...')
-	compose(projects.core, coreFiles, coreEnv, 'stop', 'app')
-	compose(projects.roots, rootsFiles, rootsEnv, 'stop', 'app')
+	// STAGE 2: Real Zero-Re-Sync Migration (Bitcoin Core -> Bitcoin Roots on standard 8333/8332)
+	console.log('\n==> [Stage 2] Stopping Bitcoin Core and migrating chain data -> Bitcoin Roots (8333/8332)...')
+	compose(projects.core, coreFiles, coreEnv, 'down', '--volumes', '--remove-orphans', '--timeout', '20')
 	const coreRegtest = path.join(dirs.core, 'data/bitcoin/regtest')
 	const rootsRegtest = path.join(dirs.roots, 'data/bitcoin/regtest')
 	run(SUDO_BIN, [
@@ -213,15 +202,19 @@ mv "${coreRegtest}/blocks" "${coreRegtest}/chainstate" "${rootsRegtest}/"
 chown -R 1000:1000 "${dirs.roots}/data/bitcoin"
 `,
 	])
-	compose(projects.core, coreFiles, coreEnv, 'down', '--volumes', '--remove-orphans', '--timeout', '20')
-	compose(projects.roots, rootsFiles, rootsEnv, 'up', '-d', 'app')
+	compose(projects.roots, rootsFiles, rootsEnv, 'up', '-d', 'app', 'tor', 'i2p')
 
-	await until('Bitcoin Roots boots from Core chain data at height 101 with exact block hash', () => {
+	const rootsVersion = await until('Bitcoin Roots boots from Core chain data at height 101 on 8333/8332', async () => {
 		assert.equal(JSON.parse(rootsCli('getblockchaininfo')).blocks, 101)
 		assert.equal(rootsCli('getblockhash', '101'), expectedHash101)
 		compose(projects.roots, rootsFiles, rootsEnv, 'exec', '-T', 'app', 'test', '-S', '/data/bitcoin/regtest/node.sock')
+		const res = await fetch('http://127.0.0.1:13000/api/bitcoind/version')
+		assert.equal(res.status, 200)
+		const v = await res.json()
+		assert.equal(v.implementation, 'Bitcoin Roots')
+		return v
 	})
-	console.log('PASS [Stage 2]: Migrated Core -> Roots at height 101 with zero re-sync')
+	console.log('PASS [Stage 2]: Migrated Core -> Roots (', rootsVersion.version, ') at height 101 on 8333/8332 with zero re-sync')
 
 	rootsCli('createwallet', 'miner')
 	const minerAddr = rootsCli('-rpcwallet=miner', 'getnewaddress')
