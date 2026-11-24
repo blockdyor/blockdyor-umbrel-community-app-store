@@ -6,7 +6,7 @@ storage:
   dataRoot: data
 category: bitcoin
 name: Bitcoin Roots
-version: "32.1.0-roots.2-blockdyor.1"
+version: "32.1.0-roots.2-blockdyor.2"
 tagline: Run your personal Bitcoin Roots node
 icon: https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bitcoin-roots/icon.png
 description: >-
@@ -45,13 +45,13 @@ gallery:
 path: ""
 defaultPassword: ""
 releaseNotes: >-
-  Security release upgrading bundled Bitcoin Roots to v32.1-roots.2 (based on
-  Bitcoin Core 32.1), fixing CVE-2026-117348 (node stall via duplicate orphan
-  inv announcements), adding BIP322 signmessage/verifymessage support, and
-  fixing BDB wallet migration from Bitcoin Knots. Includes ~350+ MB idle RAM
-  reduction, graceful version migration from v30.3-roots.1, non-colliding
-  10333/10332/2111 ports, Plan-B dark UI, Relay & Mining Policy tab, and full
-  implements: bitcoin support.
+  UI polish release for Bitcoin Roots v32.1-roots.2: replaces remaining
+  user-facing Bitcoin Core mentions with Bitcoin Roots across settings,
+  dialogs, and error notices; switches scroll fades to seamless alpha masks
+  matching the warm dark card theme; and shortens Settings tab labels so all
+  7 tabs (including Advanced) fit cleanly without clipping. Retains all
+  v32.1-roots.2 security fixes (including CVE-2026-117348), ~350+ MB idle RAM
+  reduction, non-colliding 10333/10332/2111 ports, and implements: bitcoin.
 widgets:
   - id: "stats"
     type: "four-stats"
