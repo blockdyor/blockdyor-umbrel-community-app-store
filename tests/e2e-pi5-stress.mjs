@@ -407,8 +407,10 @@ chown -R 1000:1000 "${dirs.roots}/data/bitcoin"
 	console.log('\n==> [Stage 7] Stress-testing 50 rapid txs + concurrent REST API & WebSockets...')
 	let wsTxPings = 0
 	let wsBlocks = 0
-	const txWs = new WebSocket('ws://127.0.0.1:13000/ws/transactions')
-	const blockWs = new WebSocket('ws://127.0.0.1:13000/ws/blocks')
+	const {token: wsToken} = await (await fetch('http://127.0.0.1:13000/api/ws/token')).json()
+	assert.ok(wsToken, 'failed to fetch /api/ws/token')
+	const txWs = new WebSocket(`ws://127.0.0.1:13000/api/ws/transactions?token=${encodeURIComponent(wsToken)}`)
+	const blockWs = new WebSocket(`ws://127.0.0.1:13000/api/ws/blocks?token=${encodeURIComponent(wsToken)}`)
 	await Promise.all([
 		new Promise((resolve, reject) => {
 			txWs.addEventListener('open', resolve, {once: true})
@@ -427,7 +429,15 @@ chown -R 1000:1000 "${dirs.roots}/data/bitcoin"
 	})
 	await delay(3000)
 
-	const apiPaths = ['/api/stats', '/api/sync', '/api/peers/locations', '/api/blocks?limit=50', '/api/widget/stats', '/api/widget/sync', '/api/connect/details']
+	const apiPaths = [
+		'/api/rpc/stats',
+		'/api/rpc/sync',
+		'/api/rpc/peers/locations',
+		'/api/rpc/blocks?limit=50',
+		'/api/widget/stats',
+		'/api/widget/sync',
+		'/api/connect/details',
+	]
 	const apiStorm = (async () => {
 		for (let round = 0; round < 5; round++) {
 			const responses = await Promise.all(apiPaths.map((p) => fetch(`http://127.0.0.1:13000${p}`)))
