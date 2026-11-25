@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "2.1.19"
+version: "2.1.20"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
@@ -18,11 +18,11 @@ category: bitcoin
 dependencies:
   - bitcoin
 releaseNotes: >-
-  Replaces external GeoIP lookups for the pool globe with a 100% offline local database.
+  Polishes fresh-start pool status text on Home and Insights.
 
 
-  - Removes the unintended ipwho.is lookup in scripts/pool-location.py; node IP coordinates are now resolved locally on disk using py3-maxminddb and a bundled, SHA-256-verified DB-IP City Lite database (CC BY 4.0) with zero external geolocation requests and zero persistent RAM overhead
-  - Keeps Stratum V1 active by default on port 3456 with opt-in Noise-encrypted Stratum V2 on port 3457
+  - Replaces "Running for 0m" with state-aware startup status (Ready for miners, Awaiting first share, Just started) and formats sub-minute uptime in Insights as < 1m
+  - Keeps 100% offline local GeoIP lookup (DB-IP City Lite, zero external geolocation requests) and Stratum V1 active by default on port 3456 with opt-in Stratum V2 on port 3457
 
 
   Full changelog: https://github.com/blockdyor/bassin/blob/main/docs/whats-new.md
