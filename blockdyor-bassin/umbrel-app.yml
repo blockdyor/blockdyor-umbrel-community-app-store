@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "2.1.20"
+version: "2.1.21"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
@@ -18,11 +18,11 @@ category: bitcoin
 dependencies:
   - bitcoin
 releaseNotes: >-
-  Polishes fresh-start pool status text on Home and Insights.
+  Updates CKPool to v1.2.0-4 (upstream bb7991c6) with the Stratum V2 vardiff fix and displays the CKPool packaging revision in the top bar.
 
 
-  - Replaces "Running for 0m" with state-aware startup status (Ready for miners, Awaiting first share, Just started) and formats sub-minute uptime in Insights as < 1m
-  - Keeps 100% offline local GeoIP lookup (DB-IP City Lite, zero external geolocation requests) and Stratum V1 active by default on port 3456 with opt-in Stratum V2 on port 3457
+  - Fixes Stratum V2 vardiff not scaling when channels opened with fractional difficulty (upstream 0d6841bb) and prevents suggest_difficulty from bypassing the highdiff floor (fa521486)
+  - Displays the exact CKPool build revision (CKPool v1.2.0-4) in Bassin's header so CKPool backend updates are immediately visible
 
 
   Full changelog: https://github.com/blockdyor/bassin/blob/main/docs/whats-new.md

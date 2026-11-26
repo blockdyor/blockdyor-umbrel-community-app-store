@@ -35,7 +35,7 @@ services:
       - APP_BITCOIN_ZMQ_HASHBLOCK_PORT=${APP_BITCOIN_ZMQ_HASHBLOCK_PORT}
       - APP_BITCOIN_IPC_SOCKET_RELATIVE_PATH=${APP_BITCOIN_IPC_SOCKET_RELATIVE_PATH:-node.sock}
   ckpool:
-    image: ghcr.io/blockdyor/docker-ckpool-solo:v1.2.0-3@sha256:e46169610041049b1f6d276a30ec498c20603812db2dab42ae2379e686d71d8f
+    image: ghcr.io/blockdyor/docker-ckpool-solo:v1.2.0-4@sha256:4ba8cbdf77509c0abf4a019694cc1ae5da9bd6dc156efd46d32c2f9cb5cd7b41
     command: ["-k", "-B", "-c", "/config/ckpool.conf"]
     user: "1000:1000"
     environment:
