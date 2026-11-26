@@ -6,7 +6,7 @@ storage:
   dataRoot: data
 category: bitcoin
 name: Bitcoin Roots
-version: "32.1.0-roots.2-blockdyor.4"
+version: "32.1.0-roots.2-blockdyor.5"
 tagline: Run your personal Bitcoin Roots node
 icon: https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bitcoin-roots/icon.png
 description: >-
@@ -46,13 +46,15 @@ gallery:
 path: ""
 defaultPassword: ""
 releaseNotes: >-
-  Dark-theme contrast & polish release on standard Bitcoin ports 8333/8332:
-  enables dark-mode tokens app-wide, fixes unreadable Cancel buttons in Save
-  and Restore Defaults dialogs, styles primary actions in Bitcoin Roots orange,
-  fixes light-mode toast and dropdown hover contrast, and aligns Connect modal
-  and input surfaces to the warm dark card theme. Retains v32.1-roots.2
-  security fixes (CVE-2026-117348), ~350+ MB idle RAM reduction, standard
-  8333/8332 ports, and implements: bitcoin.
+  Smaller and faster release: shrinks the Docker image by ~24 MiB compressed
+  (~115 MB on disk, 27 to 18 layers) by compacting GeoIP tables and pruning
+  unused runtime toolchains/prebuilds; cuts initial Web UI download by 94%
+  (3.62 MB uncompressed down to ~216 KB Brotli) with route and 3D lazy-loading,
+  pre-compressed Brotli/Gzip serving, immutable asset caching, and a 75%
+  smaller country GeoJSON (37 KB Brotli); eliminates 60fps Three.js object
+  allocations; stops eager 200-block RPC prefetch on every page load; adds
+  short-TTL RPC caching with in-flight deduplication; and disables noisy
+  production request logging.
 widgets:
   - id: "stats"
     type: "four-stats"
