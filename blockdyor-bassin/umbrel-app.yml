@@ -1,5 +1,5 @@
 manifestVersion: 1
-version: "2.1.21"
+version: "2.1.22"
 id: blockdyor-bassin
 name: Bassin
 tagline: Solo Bitcoin Mining Pool (ckPool)
@@ -18,11 +18,14 @@ category: bitcoin
 dependencies:
   - bitcoin
 releaseNotes: >-
-  Updates CKPool to v1.2.0-4 (upstream bb7991c6) with the Stratum V2 vardiff fix and displays the CKPool packaging revision in the top bar.
+  Smaller and faster Bassin UI and CKPool v1.2.0-5.
 
 
-  - Fixes Stratum V2 vardiff not scaling when channels opened with fractional difficulty (upstream 0d6841bb) and prevents suggest_difficulty from bypassing the highdiff floor (fa521486)
-  - Displays the exact CKPool build revision (CKPool v1.2.0-4) in Bassin's header so CKPool backend updates are immediately visible
+  - Pre-compressed static gzip assets with immutable browser caching for hashed JS/CSS bundles
+  - Lazy-loads the 3D globe asynchronously so the Home dashboard paints immediately
+  - Replaces the 121 MiB offline GeoIP MMDB + C library with a compact 51.4 MiB pure-Python binary lookup table (zero persistent RAM, zero external requests)
+  - Removes unused fonts, favicons, UI components, dependencies, and redundant GeoJSON metadata (static bundle reduced from 4.5 MiB to 3.4 MiB)
+  - Compiles CKPool v1.2.0-5 with portable -O3 and LTO (-flto=auto) for faster share and Stratum processing
 
 
   Full changelog: https://github.com/blockdyor/bassin/blob/main/docs/whats-new.md

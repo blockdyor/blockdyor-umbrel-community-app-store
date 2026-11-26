@@ -35,7 +35,7 @@ services:
       - APP_BITCOIN_ZMQ_HASHBLOCK_PORT=${APP_BITCOIN_ZMQ_HASHBLOCK_PORT}
       - APP_BITCOIN_IPC_SOCKET_RELATIVE_PATH=${APP_BITCOIN_IPC_SOCKET_RELATIVE_PATH:-node.sock}
   ckpool:
-    image: ghcr.io/blockdyor/docker-ckpool-solo:v1.2.0-4@sha256:4ba8cbdf77509c0abf4a019694cc1ae5da9bd6dc156efd46d32c2f9cb5cd7b41
+    image: ghcr.io/blockdyor/docker-ckpool-solo:v1.2.0-5@sha256:ac7d8ebec5f0916329399fc9d97634b660602c622fb59234f9723a1fed65b869
     command: ["-k", "-B", "-c", "/config/ckpool.conf"]
     user: "1000:1000"
     environment:
@@ -57,7 +57,7 @@ services:
       - ${APP_DATA_DIR}/data/sv2:/sv2
       - ${APP_DATA_DIR}/data/www:/www
   ui:
-    image: ghcr.io/blockdyor/bassin-ui:457b8f3@sha256:b9fad0d59466a11f9a6c00d958b02faa3f09ff58e9319e638941518102cb3a7d
+    image: ghcr.io/blockdyor/bassin-ui:0a40605@sha256:9524816411d76f804e47ddc58110e8aed66b71980475d570567030ddfed6d72a
     user: "1000:1000"
     environment:
       - BASSIN_CONFIG_TOKEN=${APP_PASSWORD}
