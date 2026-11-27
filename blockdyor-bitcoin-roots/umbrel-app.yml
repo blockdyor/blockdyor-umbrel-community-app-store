@@ -6,7 +6,7 @@ storage:
   dataRoot: data
 category: bitcoin
 name: Bitcoin Roots
-version: "32.1.0-roots.2-blockdyor.5"
+version: "32.1.0-roots.2-blockdyor.6"
 tagline: Run your personal Bitcoin Roots node
 icon: https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bitcoin-roots/icon.png
 description: >-
@@ -46,15 +46,14 @@ gallery:
 path: ""
 defaultPassword: ""
 releaseNotes: >-
-  Smaller and faster release: shrinks the Docker image by ~24 MiB compressed
-  (~115 MB on disk, 27 to 18 layers) by compacting GeoIP tables and pruning
-  unused runtime toolchains/prebuilds; cuts initial Web UI download by 94%
-  (3.62 MB uncompressed down to ~216 KB Brotli) with route and 3D lazy-loading,
-  pre-compressed Brotli/Gzip serving, immutable asset caching, and a 75%
-  smaller country GeoJSON (37 KB Brotli); eliminates 60fps Three.js object
-  allocations; stops eager 200-block RPC prefetch on every page load; adds
-  short-TTL RPC caching with in-flight deduplication; and disables noisy
-  production request logging.
+  Fixes the 3D globe map and node geolocation: preserves exact country polygon
+  coordinates (restoring all 47 countries that were skipped after a rounded
+  polygon error while still keeping the GeoJSON 90% smaller via Brotli), fixes
+  non-monotonic IPv6 entries in the compacted GeoIP table, and prioritizes real
+  public IPs from clearnet peers and getnetworkinfo().localaddresses (ignoring
+  private/Docker/CGNAT IPs) with the deterministic 64-city weighted fallback
+  when no public IP is available. Retains all size and speed improvements from
+  blockdyor.5.
 widgets:
   - id: "stats"
     type: "four-stats"

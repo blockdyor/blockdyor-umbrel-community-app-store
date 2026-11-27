@@ -6,7 +6,7 @@ services:
       APP_HOST: ${APP_BITCOIN_ROOTS_NODE_IP}
       APP_PORT: 3000
   app:
-    image: ghcr.io/blockdyor/umbrel-bitcoin-roots:v32.1-roots.2-blockdyor.4@sha256:f95177f80bafa50abd76f2d7b7100c0451de1d37827523c6dae61b53973d0fac
+    image: ghcr.io/blockdyor/umbrel-bitcoin-roots:v32.1-roots.2-blockdyor.6@sha256:5782905af407c6c809af6f55ececf2930e1846160258eb56310a091f06abd29c
     user: '1000:1000'
     restart: on-failure
     stop_grace_period: 15m30s
