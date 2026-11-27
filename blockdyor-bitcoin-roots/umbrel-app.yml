@@ -6,7 +6,7 @@ storage:
   dataRoot: data
 category: bitcoin
 name: Bitcoin Roots
-version: "32.1.0-roots.2-blockdyor.6"
+version: "32.1.0-roots.2-blockdyor.7"
 tagline: Run your personal Bitcoin Roots node
 icon: https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bitcoin-roots/icon.png
 description: >-
@@ -46,14 +46,14 @@ gallery:
 path: ""
 defaultPassword: ""
 releaseNotes: >-
-  Fixes the 3D globe map and node geolocation: preserves exact country polygon
-  coordinates (restoring all 47 countries that were skipped after a rounded
-  polygon error while still keeping the GeoJSON 90% smaller via Brotli), fixes
-  non-monotonic IPv6 entries in the compacted GeoIP table, and prioritizes real
-  public IPs from clearnet peers and getnetworkinfo().localaddresses (ignoring
-  private/Docker/CGNAT IPs) with the deterministic 64-city weighted fallback
-  when no public IP is available. Retains all size and speed improvements from
-  blockdyor.5.
+  Fixes the 3D globe map cache and node geolocation: cache-busts the countries
+  GeoJSON URL (?v=2) and switches unhashed static files to ETag revalidation
+  (no-cache) so browsers immediately load the fixed 177-country world map
+  without clearing cache, preserves exact country polygon coordinates (all
+  continents intact, 65 KB Brotli), fixes non-monotonic IPv6 entries in the
+  compacted GeoIP table, and prioritizes real public IPs from clearnet peers
+  and getnetworkinfo().localaddresses with the deterministic 64-city weighted
+  fallback when no public IP is available.
 widgets:
   - id: "stats"
     type: "four-stats"

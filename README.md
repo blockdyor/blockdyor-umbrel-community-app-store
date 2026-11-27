@@ -57,7 +57,7 @@ https://github.com/blockdyor/blockdyor-umbrel-community-app-store
 | | App | Version | Category | Web UI | Highlights |
 | :-: | --- | --- | --- | :-: | --- |
 | <a href="#bassin"><img src="blockdyor-bassin/icon.svg" width="44" height="44" alt="Bassin"></a> | [**Bassin**](#bassin)<br><sub>`blockdyor-bassin`</sub> | `2.1.18` | Bitcoin | `5009` | 0%-fee solo Bitcoin mining pool (CKPool) with Stratum V1 (`3456`), opt-in Noise-encrypted Stratum V2 (`3457`), IPC mining, live Settings, and dashboard widgets. |
-| <a href="#bitcoin-roots"><img src="blockdyor-bitcoin-roots/icon.svg" width="44" height="44" alt="Bitcoin Roots"></a> | [**Bitcoin Roots**](#bitcoin-roots)<br><sub>`blockdyor-bitcoin-roots`</sub> | `32.1.0-roots.2-blockdyor.6` | Bitcoin | `2111` | Bitcoin Roots (`v32.1-roots.2`) full node with Relay &amp; Mining Policy UI, persistent Tor &amp; I2P, Plan-B dark UI, standard Bitcoin ports (`8333`/`8332`), and `implements: bitcoin` for CLN / Bassin / LND / Electrs. |
+| <a href="#bitcoin-roots"><img src="blockdyor-bitcoin-roots/icon.svg" width="44" height="44" alt="Bitcoin Roots"></a> | [**Bitcoin Roots**](#bitcoin-roots)<br><sub>`blockdyor-bitcoin-roots`</sub> | `32.1.0-roots.2-blockdyor.7` | Bitcoin | `2111` | Bitcoin Roots (`v32.1-roots.2`) full node with Relay &amp; Mining Policy UI, persistent Tor &amp; I2P, Plan-B dark UI, standard Bitcoin ports (`8333`/`8332`), and `implements: bitcoin` for CLN / Bassin / LND / Electrs. |
 
 ---
 
@@ -117,7 +117,7 @@ https://github.com/blockdyor/blockdyor-umbrel-community-app-store
       <img src="blockdyor-bitcoin-roots/icon.svg" width="76" height="76" alt="Bitcoin Roots">
     </td>
     <td>
-      <strong>Personal Bitcoin Roots Node</strong> &middot; <code>blockdyor-bitcoin-roots</code> &middot; <code>v32.1.0-roots.2-blockdyor.6</code><br>
+      <strong>Personal Bitcoin Roots Node</strong> &middot; <code>blockdyor-bitcoin-roots</code> &middot; <code>v32.1.0-roots.2-blockdyor.7</code><br>
       Full node powered by <a href="https://plan-b.foundation/bitcoin-roots">Bitcoin Roots</a> (<code>v32.1-roots.2</code>) with a Plan-B dark interface, dedicated <strong>Relay &amp; Mining Policy</strong> settings tab, persistent Tor &amp; I2P services, dashboard widgets, and native Umbrel Bitcoin provider support.<br>
       <sub>
         <a href="blockdyor-bitcoin-roots/umbrel-app.yml">Manifest</a> &middot;
