@@ -6,7 +6,7 @@ storage:
   dataRoot: data
 category: bitcoin
 name: Bitcoin Roots
-version: "32.1.0-roots.2-blockdyor.8"
+version: "32.1.0-roots.2-blockdyor.9"
 tagline: Run your personal Bitcoin Roots node
 icon: https://raw.githubusercontent.com/blockdyor/blockdyor-umbrel-community-app-store/master/blockdyor-bitcoin-roots/icon.png
 description: >-
@@ -46,14 +46,17 @@ gallery:
 path: ""
 defaultPassword: ""
 releaseNotes: >-
-  Massive browser CPU/GPU reduction so idle and background tabs stay cool and
-  quiet: drops 5-cube block heatmap FBOs from 1024x1024 to 256x256 (16x less
-  VRAM/fillrate) with on-demand dirty-flag rendering (0 idle offscreen blur
-  passes/sec vs 600/sec before) and full WebGL geometry/material disposal;
-  converts 30 Hz transaction WebSocket pings and 120 Hz mouse tracking to
-  zero-rerender ref/callback paths; pauses both Globe and Blocks WebGL
-  rendering when the tab is hidden; auto-centers the Globe on your node; and
-  resolves all SonarCloud S8707 findings (0 issues, 0 hotspots).
+  Full-app line-by-line leak hardening (21 backend and frontend fixes, 0
+  SonarCloud issues/hotspots): fixes startup ZMQ subscriber socket leaks,
+  serializes heavy verbosity-2 getblock fetches with in-flight deduplication
+  and empty-block caching to prevent V8 heap spikes, fixes bitcoind spawn-error
+  deadlock and idempotent graceful shutdown (closing Fastify, ZMQ, heartbeat
+  timer, and GeoIP FDs); fixes Globe WebGLRenderer/EffectComposer/OrbitControls
+  document-listener and arc leaks on unmount, eliminates per-render Sphere
+  allocations and 60fps Vector3 churn, disposes AnimatedCube liquidMaterial,
+  stops the 2-second useSyncStatus re-render storm across Home/Layout/Insights,
+  removes 250 per-row ResizeObservers in PeersTable, and fixes uncancelled
+  timers in Scene, Settings, and ConnectionDetails.
 widgets:
   - id: "stats"
     type: "four-stats"
